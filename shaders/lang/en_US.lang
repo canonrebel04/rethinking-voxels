@@ -981,3 +981,15 @@ option.ATM_END_R=Atmosphere Red Multiplier
 option.ATM_END_G=Atmosphere Green Multiplier
 option.ATM_END_B=Atmosphere Blue Multiplier
 option.ATM_END_I=Atmosphere Intensity Multiplier
+
+option.VOLUMETRIC_BLOCKLIGHT=Volumetric Blocklight
+option.VOLUMETRIC_BLOCKLIGHT.comment=Allows block lights to cast volumetric rays. §c[-]§r High Performance Impact.
+
+option.TRANSLUCENT_LIGHT_CONDUCTION=Translucent Light Conduction
+option.TRANSLUCENT_LIGHT_CONDUCTION.comment=How easily light travels through translucent blocks like glass and water.
+
+option.TRANSLUCENT_LIGHT_TINT=Translucent Light Tint
+option.TRANSLUCENT_LIGHT_TINT.comment=How much translucent blocks tint the light passing through them.
+
+option.DENOISING=Denoising
+option.DENOISING.comment=Enables denoising for ray-traced effects.
