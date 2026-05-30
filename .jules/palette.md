@@ -1,0 +1,3 @@
+## 2024-05-30 - Shaderpack Settings UX
+**Learning:** In Minecraft shaderpacks (which lack a traditional web UI), the user experience is heavily dependent on the settings menu configured via `shaders.properties`. If options are missing from `en_US.lang`, users see raw configuration keys instead of user-friendly names, and they miss crucial context about performance impact or behavior that tooltips (`.comment`) provide.
+**Action:** Always ensure that any new option or screen defined in `shaders.properties` has corresponding human-readable labels and `.comment` descriptions in the `.lang` files to maintain a polished, accessible configuration experience.

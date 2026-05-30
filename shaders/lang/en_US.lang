@@ -981,3 +981,26 @@ option.ATM_END_R=Atmosphere Red Multiplier
 option.ATM_END_G=Atmosphere Green Multiplier
 option.ATM_END_B=Atmosphere Blue Multiplier
 option.ATM_END_I=Atmosphere Intensity Multiplier
+
+
+# Missing UX additions
+option.VOLUMETRIC_BLOCKLIGHT=Volumetric Blocklight
+option.VOLUMETRIC_BLOCKLIGHT.comment=Allows block light sources to cast volumetric rays into fog.
+
+option.DENOISING=Shadow Denoising
+option.DENOISING.comment=Applies a denoiser to the shadow maps.
+
+option.TRANSLUCENT_LIGHT_CONDUCTION=Translucent Light Conduction
+option.TRANSLUCENT_LIGHT_CONDUCTION.comment=Allows light to pass through translucent blocks.
+
+option.TRANSLUCENT_LIGHT_TINT=Translucent Light Tint
+option.TRANSLUCENT_LIGHT_TINT.comment=Tints the light that passes through translucent blocks.
+
+option.BLOCKLIGHT_STRENGTH=Blocklight Strength
+option.BLOCKLIGHT_STRENGTH.comment=Adjusts the overall brightness of block lights.
+
+option.BLOCKLIGHT_CHECK_INTERVAL=Blocklight Check Interval
+option.BLOCKLIGHT_CHECK_INTERVAL.comment=How often to check for block light updates.
+
+option.OCCLUSION_CASCADE_COUNT=Occlusion Cascade Count
+option.OCCLUSION_CASCADE_COUNT.comment=Number of occlusion cascades for shadows.
