@@ -30,7 +30,8 @@ vec4 getLightCol(int lightPointer, inout vec3 pos0) {
 	pos0 = dir;
 	float brightness = length(dir);
 	float lightBrightness = thisLight.brightnessMat >> 16;
-	brightness = 0.0625 * lightBrightness * pow(max(0, 1 - brightness / lightBrightness), 2);
+	// Bolt: Use pow2() instead of pow() for better performance
+	brightness = 0.0625 * lightBrightness * pow2(max(0, 1 - brightness / lightBrightness));
 	if (brightness < 0.01) return vec4(0);
 	#ifdef ACCURATE_RT
 		ray_hit_t rayHit = betterRayTrace(pos, dir, colortex15);
@@ -87,7 +88,8 @@ void main() {
 		for (int n = 0; n < lightCount; n++) {
 			if ((occlusionData[n/32] >> (n%32)) % 2 == 0) continue;
 			vec3 dir = lightPositions[n] - pos;
-			float brightness = 0.0625 * lightCols[n].a * pow(max(0, 1 - length(dir) / lightCols[n].a), 2);
+			// Bolt: Use pow2() instead of pow() for better performance
+			float brightness = 0.0625 * lightCols[n].a * pow2(max(0, 1 - length(dir) / lightCols[n].a));
 			if (brightness > 0.01) {
 				vec4 thisAdjustedCol = vec4(lightCols[n].xyz, 1) * brightness;
 				irrCacheData[6] += thisAdjustedCol;
