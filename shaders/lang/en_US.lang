@@ -981,3 +981,24 @@ option.ATM_END_R=Atmosphere Red Multiplier
 option.ATM_END_G=Atmosphere Green Multiplier
 option.ATM_END_B=Atmosphere Blue Multiplier
 option.ATM_END_I=Atmosphere Intensity Multiplier
+
+option.DENOISING=Denoising
+option.DENOISING.comment=Applies a spatial and temporal filter to reduce noise.
+
+option.VOLUMETRIC_BLOCKLIGHT=Volumetric Blocklight
+option.VOLUMETRIC_BLOCKLIGHT.comment=Allows block lights to cast volumetric shafts.
+
+option.BLOCKLIGHT_CHECK_INTERVAL=Blocklight Check Interval
+option.BLOCKLIGHT_CHECK_INTERVAL.comment=Adjusts the interval at which block light updates are processed.
+
+option.BLOCKLIGHT_STRENGTH=Blocklight Strength
+option.BLOCKLIGHT_STRENGTH.comment=Adjusts the overall brightness of block lights.
+
+option.OCCLUSION_CASCADE_COUNT=Occlusion Cascade Count
+option.OCCLUSION_CASCADE_COUNT.comment=Number of cascades used for calculating occlusion.
+
+option.TRANSLUCENT_LIGHT_CONDUCTION=Translucent Light Conduction
+option.TRANSLUCENT_LIGHT_CONDUCTION.comment=How well light passes through translucent materials.
+
+option.TRANSLUCENT_LIGHT_TINT=Translucent Light Tint
+option.TRANSLUCENT_LIGHT_TINT.comment=How much translucent materials tint the light passing through them.
