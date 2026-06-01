@@ -1,0 +1,3 @@
+## 2024-05-24 - Missing Tooltips in Shader Menus
+**Learning:** In Minecraft shaders (using Iris/Optifine format), user interface text and tooltips for shader options are configured by mapping keys from 'shaders.properties' to user-friendly strings and '.comment' values in 'shaders/lang/en_US.lang'. Many screens (e.g., entity color options) and sub-options are missing .comment fields, which means users get no tooltip explaining what the screen or option does, making the interface less accessible and intuitive.
+**Action:** Add missing .comment entries in shaders/lang/en_US.lang for screen options (like screen.VX_PERF_STUFF) to provide helpful context to users.
