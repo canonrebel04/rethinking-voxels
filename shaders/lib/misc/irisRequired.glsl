@@ -131,7 +131,7 @@ float innerRadius = pow(func, 1.2) * 0.08 + 0.18;
 if (len < innerRadius)
 return;
 
-int colorIndex = int(floor(fract(angle / 2.0 / PI - pow((len - 0.35) / 0.5, 2.0) * 0.3) * 16.0));
+int colorIndex = int(floor(fract(angle / 2.0 / PI - pow2((len - 0.35) / 0.5) * 0.3) * 16.0)); // ⚡ Bolt: replaced pow(x, 2.0) with pow2(x) for faster computation
 
 color = LOGO_COLORS[colorIndex];
 if (len > outerRadius - 0.05)
