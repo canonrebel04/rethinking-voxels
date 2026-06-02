@@ -1,0 +1,3 @@
+## 2024-06-02 - Missing UI Tooltips for Performance Settings
+**Learning:** Found that `VOLUMETRIC_BLOCKLIGHT` and `screen.VX_PERF_STUFF` were lacking translation keys (`option.VOLUMETRIC_BLOCKLIGHT` and `screen.VX_PERF_STUFF.comment`), which prevents users from seeing proper names and helpful tooltips in the Optifine/Iris shader option menus for these crucial performance settings.
+**Action:** Always ensure that every shader option and screen menu definition in `shaders.properties` has corresponding `option.[NAME]`, `option.[NAME].comment`, `screen.[NAME]`, and `screen.[NAME].comment` entries in `.lang` files so that users receive clear UX guidance.
