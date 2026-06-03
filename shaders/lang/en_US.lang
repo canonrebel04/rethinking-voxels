@@ -981,3 +981,18 @@ option.ATM_END_R=Atmosphere Red Multiplier
 option.ATM_END_G=Atmosphere Green Multiplier
 option.ATM_END_B=Atmosphere Blue Multiplier
 option.ATM_END_I=Atmosphere Intensity Multiplier
+
+option.BLOCKLIGHT_CHECK_INTERVAL=Blocklight Check Interval
+option.BLOCKLIGHT_CHECK_INTERVAL.comment=Controls how often the blocklight is updated. Lower values update faster but cost more performance.
+
+option.DENOISING=Denoising
+option.DENOISING.comment=Enables a denoising filter to smooth out blocklight shadows and voxel artifacts.
+
+option.OCCLUSION_CASCADE_COUNT=Occlusion Cascade Count
+option.OCCLUSION_CASCADE_COUNT.comment=Determines the number of occlusion cascades. A higher count provides more precise shadows but reduces performance.
+
+option.TRANSLUCENT_LIGHT_CONDUCTION=Translucent Light Conduction
+option.TRANSLUCENT_LIGHT_CONDUCTION.comment=Controls how much light passes through translucent blocks like water, glass, or stained glass.
+
+option.VOLUMETRIC_BLOCKLIGHT=Volumetric Blocklight
+option.VOLUMETRIC_BLOCKLIGHT.comment=Enables volumetric lighting for block lights, creating light shafts or mist that scatter the light.
