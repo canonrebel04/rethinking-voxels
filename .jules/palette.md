@@ -1,0 +1,3 @@
+## 2024-05-24 - Missing UI String Definitions
+**Learning:** In Minecraft shaderpacks (like Rethinking Voxels), user interface text and tooltips for shader options are configured by mapping keys from `shaders.properties` (e.g. `option.[NAME]`) to `.comment` values in `.lang` files like `shaders/lang/en_US.lang`. If these entries are missing, the UI defaults to displaying raw variable names (e.g., `VOLUMETRIC_BLOCKLIGHT`) and lacks descriptive tooltips, resulting in a poor, developer-centric user experience.
+**Action:** Always cross-reference `shaders.properties` configuration blocks with `.lang` definition files to ensure every exposed UI setting has user-friendly display names and helpful `.comment` descriptions, especially for newly added or renamed properties.

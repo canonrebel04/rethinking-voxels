@@ -183,6 +183,9 @@ screen.WORLD_OUTLINE_SETTINGS.comment=Settings that are about the optional outli
 option.ACCURATE_RT=Accurate Ray Tracing
 option.ACCURATE_RT.comment=use triangle data instead of voxel data for ray tracing. §a[+] §r Accounts for all geometry, including mobs and custom models. §c[-] §r multiple times slower than voxel RT.
 
+option.TRANSLUCENT_LIGHT_CONDUCTION=Translucent Light Conduction
+option.TRANSLUCENT_LIGHT_CONDUCTION.comment=Allows light to pass through translucent blocks (like stained glass) in a more realistic manner, maintaining the colored tint.
+
 option.ADVANCED_LIGHT_TRACING=Light Propagation Mode
 option.ADVANCED_LIGHT_TRACING.comment=Toggles between two different methods of calculating block light values. Per-pixel yields sharp shadows from block light, but has a few more issues. per-block doesn't have as sharp shadows from blocklight, but it is a little faster at high resolutions.
 value.ADVANCED_LIGHT_TRACING.0=Per-Block
@@ -191,8 +194,14 @@ value.ADVANCED_LIGHT_TRACING.1=Per-Pixel
 option.BLOCKLIGHT_SOURCE_SIZE=Blocklight Source Size
 option.BLOCKLIGHT_SOURCE_SIZE.comment=Controls softness of shadows cast by block light sources. Needs pixel perfect shadows.
 
+option.DENOISING=Denoising
+option.DENOISING.comment=Applies a spatial denoiser to improve the visual quality of indirect lighting and blocklight shadows.
+
 option.CORRECT_CUBOID_OFFSETS=Cuboid-aware Shadow Softness
 option.CORRECT_CUBOID_OFFSETS.comment=If enabled, shadows cast by cuboid shaped light sources will have correct directional softness.
+
+option.VOLUMETRIC_BLOCKLIGHT=Volumetric Blocklight
+option.VOLUMETRIC_BLOCKLIGHT.comment=Enables volumetric lighting effects from block light sources (like torches and lanterns).
 
 option.BLOCKLIGHT_SHAFT_STRENGTH=Volumetric Blocklight Strength
 option.BLOCKLIGHT_SHAFT_STRENGTH.comment=Brightness of blocklight contribution to volumetric fog.
