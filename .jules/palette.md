@@ -1,0 +1,3 @@
+## 2024-05-24 - Shader Options Missing UX Context
+**Learning:** Minecraft shaderpacks handle UI configuration through a property file mappings, which can result in user-facing options displaying as raw, capitalized configuration variables (e.g. `VOLUMETRIC_BLOCKLIGHT`) without descriptions if corresponding entries are missing in `lang/en_US.lang`. This represents an unexpected accessibility failure mode for custom UIs not built with web standards.
+**Action:** Always scan `.properties` files for UI structure and cross-reference them with `.lang` files to identify undefined/untranslated config variables that appear to the end-user.
