@@ -981,3 +981,11 @@ option.ATM_END_R=Atmosphere Red Multiplier
 option.ATM_END_G=Atmosphere Green Multiplier
 option.ATM_END_B=Atmosphere Blue Multiplier
 option.ATM_END_I=Atmosphere Intensity Multiplier
+option.VOLUMETRIC_BLOCKLIGHT=Volumetric Blocklight
+option.VOLUMETRIC_BLOCKLIGHT.comment=Enables volumetric blocklight, rendering shafts of light originating from blocks.
+
+option.DENOISING=Denoising
+option.DENOISING.comment=Enables a spatial denoising filter to reduce noise artifacts.
+
+option.TRANSLUCENT_LIGHT_CONDUCTION=Translucent Light Conduction
+option.TRANSLUCENT_LIGHT_CONDUCTION.comment=Controls the behavior of light travelling through translucent blocks.
