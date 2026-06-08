@@ -1,0 +1,3 @@
+## 2024-05-18 - Shader UI Readability
+**Learning:** In Minecraft shader packs, raw variable names in `shaders.properties` are directly exposed to the user interface unless mapped in `.lang` files (e.g., `option.VARIABLE_NAME` and `option.VARIABLE_NAME.comment`). The UI heavily relies on these language keys for accessibility (tooltips) and readability.
+**Action:** Always ensure any new or existing `screen.` or variable exposed in `shaders.properties` has a matching human-readable name and descriptive `.comment` tooltip in `en_US.lang`, potentially utilizing Minecraft color codes (`§a`, `§c`) to denote positive/negative impacts.

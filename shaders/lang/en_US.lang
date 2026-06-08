@@ -981,3 +981,12 @@ option.ATM_END_R=Atmosphere Red Multiplier
 option.ATM_END_G=Atmosphere Green Multiplier
 option.ATM_END_B=Atmosphere Blue Multiplier
 option.ATM_END_I=Atmosphere Intensity Multiplier
+
+option.DENOISING=Denoising
+option.DENOISING.comment=Applies a spatial denoiser to reduce noise in lighting and reflections. §a[+]§r Produces a cleaner image. §c[-]§r May blur details or introduce slight ghosting.
+option.TRANSLUCENT_LIGHT_CONDUCTION=Translucent Light Conduction
+option.TRANSLUCENT_LIGHT_CONDUCTION.comment=Controls how much light passes through translucent blocks like water and stained glass. Higher values allow more light to penetrate.
+option.VOLUMETRIC_BLOCKLIGHT=Volumetric Blocklight
+option.VOLUMETRIC_BLOCKLIGHT.comment=Enables block lights (torches, glowstone, etc.) to cast volumetric light rays (god rays) through fog and dust. §a[+]§r Enhances atmosphere. §c[-]§r Can impact performance.
+
+screen.VX_PERF_STUFF.comment=Contains performance-related settings specific to rethinking voxels lighting system.
