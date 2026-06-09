@@ -1,0 +1,3 @@
+## 2024-06-09 - Minecraft Shaderpack Missing Options Localization
+**Learning:** In Minecraft shaderpacks (using Optifine/Iris format), UI options defined in `shaders.properties` fall back to displaying their raw, ALL_CAPS variable names in the settings menu if they lack a corresponding `option.[NAME]` and `option.[NAME].comment` in the language files (e.g., `en_US.lang`). This means that any newly added internal variables that get exposed to the UI immediately create an accessibility/UX issue by showing technical terms to non-technical users.
+**Action:** Always scan `shaders.properties` against `.lang` files to identify missing user-facing localization strings to ensure a polished options menu.
