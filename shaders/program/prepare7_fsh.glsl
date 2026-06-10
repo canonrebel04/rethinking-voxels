@@ -116,7 +116,8 @@ void main() {
 
 					float brightness = length(dir);
 					float lightBrightness = thisLight.brightnessMat >> 16;
-					brightness = max(ndotl, sssBrightness) * 0.0625 * lightBrightness * pow(max(0, 1 - brightness / lightBrightness), 2);
+					// ⚡ Bolt: Prefer fast pow2() for squaring instead of pow(x, 2)
+					brightness = max(ndotl, sssBrightness) * 0.0625 * lightBrightness * pow2(max(0.0, 1.0 - brightness / lightBrightness));
 					if (brightness > 0.01) {
 						vec3 thisLightColor = vec3(
 							thisLight.packedColor % 256,
