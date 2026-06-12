@@ -1,0 +1,3 @@
+## 2024-06-12 - Finding and Exposing Hidden Shader Settings
+**Learning:** In this Minecraft shaderpack structure, inaccessible UI settings can be found by comparing `.lang` localization entries against the UI hierarchy defined in `shaders.properties`. Orphaned `.lang` strings often indicate a setting (like `WORLD_OUTLINE_THICKNESS`) that is defined but missing from the property tree, making it inaccessible to users.
+**Action:** Always cross-reference `.lang` strings and sliders defined in `shaders.properties` with the actual screen hierarchies when looking for UX improvements or fixing "missing setting" bugs in shaderpacks.
