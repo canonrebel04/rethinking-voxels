@@ -183,6 +183,15 @@ screen.WORLD_OUTLINE_SETTINGS.comment=Settings that are about the optional outli
 option.ACCURATE_RT=Accurate Ray Tracing
 option.ACCURATE_RT.comment=use triangle data instead of voxel data for ray tracing. §a[+] §r Accounts for all geometry, including mobs and custom models. §c[-] §r multiple times slower than voxel RT.
 
+option.DENOISING=Denoising
+option.DENOISING.comment=Applies spatial and temporal filters to reduce noise in lighting and reflections. §c[-]§r May introduce minor ghosting artifacts in motion.
+
+option.TRANSLUCENT_LIGHT_CONDUCTION=Translucent Light Conduction
+option.TRANSLUCENT_LIGHT_CONDUCTION.comment=Adjusts how much block light passes through translucent blocks like water and stained glass.
+
+option.VOLUMETRIC_BLOCKLIGHT=Volumetric Blocklight
+option.VOLUMETRIC_BLOCKLIGHT.comment=Allows block lights to cast visible volumetric light rays through the fog/atmosphere.
+
 option.ADVANCED_LIGHT_TRACING=Light Propagation Mode
 option.ADVANCED_LIGHT_TRACING.comment=Toggles between two different methods of calculating block light values. Per-pixel yields sharp shadows from block light, but has a few more issues. per-block doesn't have as sharp shadows from blocklight, but it is a little faster at high resolutions.
 value.ADVANCED_LIGHT_TRACING.0=Per-Block
