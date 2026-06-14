@@ -1,0 +1,3 @@
+## 2024-05-19 - Replace pow(x, 2.0) with pow2(x)
+**Learning:** In GLSL, standard `pow(x, y)` evaluates via `exp2(y * log2(x))` which is slower. This codebase defines an inline `pow2(x)` function in `shaders/lib/common.glsl` (via `x * x`) which is significantly faster and should be preferred for squared values.
+**Action:** When calculating powers of 2 (e.g. `pow(x, 2.0)` or `pow(x, 2)`), use the codebase's specific `pow2(x)` function instead. Make sure `common.glsl` is accessible in the file's include hierarchy before replacing it.
