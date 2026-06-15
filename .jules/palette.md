@@ -1,0 +1,3 @@
+## 2024-05-15 - Missing screen link for World Outline Settings
+**Learning:** Found an orphaned `.lang` string `screen.WORLD_OUTLINE_SETTINGS`. In this codebase, missing or inaccessible UI settings can be identified by cross-referencing `.lang` localization entries against the UI hierarchy in `shaders.properties`. Orphaned `.lang` strings often indicate a setting that needs to be added to the property tree in `shaders.properties` (e.g., exposing a slider by adding a missing `screen` mapping) to be accessible to users.
+**Action:** Always check if a defined `.lang` string is actually linked in the `shaders.properties` configuration structure so it appears in the UI. Expose missing options.
