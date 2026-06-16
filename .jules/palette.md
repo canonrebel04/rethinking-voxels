@@ -1,0 +1,3 @@
+## 2024-05-24 - Missing translation strings for shader properties
+**Learning:** Orphaned settings in UI configuration (`shaders.properties` mapping to variables) often lack `.lang` keys (`option.[NAME]` and `option.[NAME].comment`). This results in raw variable names and missing tooltips being presented to the user, leading to a degraded configuration experience.
+**Action:** When inspecting shader codebases, cross-reference the settings available in `shaders.properties`'s `screen` definitions and `sliders` lists against the actual `.lang` files to identify and add missing tooltips/translations.
