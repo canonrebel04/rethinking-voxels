@@ -103,7 +103,7 @@ void main() {
 					float sssBrightness = 0;
 					if (materialData.a < 0.75) {
 						sssOffset = max(posLen * 0.03, 0.3) * normDir;
-						float VdotL = max(0, dot(normPlayerPos, normDir));
+						float VdotL = max(0.0, dot(normPlayerPos, normDir));
 						float lightFactor = pow(max(VdotL, 0.0), 10.0) * float(isEyeInWater == 0);
 						if (abs(materialData.a - 0.5) < 0.25) {
 							sssBrightness = lightFactor * 0.5 + 0.3;
@@ -112,11 +112,11 @@ void main() {
 						}
 					}
 
-					float ndotl = sqrt(max(0, dot(normDir, normalDepthData.xyz)));
+					float ndotl = sqrt(max(0.0, dot(normDir, normalDepthData.xyz)));
 
 					float brightness = length(dir);
 					float lightBrightness = thisLight.brightnessMat >> 16;
-					brightness = max(ndotl, sssBrightness) * 0.0625 * lightBrightness * pow(max(0, 1 - brightness / lightBrightness), 2);
+					brightness = max(ndotl, sssBrightness) * 0.0625 * lightBrightness * pow2(max(0.0, 1.0 - brightness / lightBrightness));
 					if (brightness > 0.01) {
 						vec3 thisLightColor = vec3(
 							thisLight.packedColor % 256,

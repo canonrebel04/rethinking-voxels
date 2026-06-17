@@ -1,0 +1,3 @@
+## 2024-05-18 - Replacing generic pow(x, 2) calls with optimized pow2(x)
+**Learning:** Standard `pow(x, y)` in GLSL evaluates as `exp2(y * log2(x))`, which is computationally expensive and introduces undefined behavior when the base `x` is negative. This codebase defines a faster `pow2()` function in `shaders/lib/common.glsl`.
+**Action:** When optimizing shader performance, always favor replacing inline `pow(..., 2.0)` with `pow2(...)`. Furthermore, implicit type casting from int to float in functions like `max(0, floatVar)` slows down older GPUs; cast to explicit float literals (e.g., `0.0`, `1.0`).
