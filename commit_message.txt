@@ -1,0 +1,6 @@
+🎨 Palette: [UX improvement] Add missing tooltips and names for advanced shader options
+
+💡 What: Added friendly names and informative tooltips for `DENOISING`, `TRANSLUCENT_LIGHT_CONDUCTION`, and `VOLUMETRIC_BLOCKLIGHT` in `en_US.lang`.
+🎯 Why: These settings were exposed in the `shaders.properties` configuration UI screens but lacked translations in `en_US.lang`. This caused the UI to display raw variable names (e.g., "DENOISING" instead of "Denoising") and prevented users from having hover tooltips explaining what the settings do or warning them of potential visual/performance impacts.
+📸 Before/After: Before, these settings had no tooltips. Now, they have informative tooltips with standard Minecraft color formatting.
+♿ Accessibility: Improves cognitive accessibility by providing clear, plain-language explanations of complex graphics options and highlighting potential drawbacks (e.g. ghosting, performance hits) using standardized visual cues.

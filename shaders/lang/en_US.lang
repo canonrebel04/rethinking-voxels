@@ -981,3 +981,12 @@ option.ATM_END_R=Atmosphere Red Multiplier
 option.ATM_END_G=Atmosphere Green Multiplier
 option.ATM_END_B=Atmosphere Blue Multiplier
 option.ATM_END_I=Atmosphere Intensity Multiplier
+
+option.DENOISING=Denoising
+option.DENOISING.comment=Enables a spatial and temporal filter to reduce noise. §e[*]§r Might cause some ghosting or smearing.
+
+option.TRANSLUCENT_LIGHT_CONDUCTION=Translucent Light Conduction
+option.TRANSLUCENT_LIGHT_CONDUCTION.comment=Adjusts how much light passes through translucent blocks like glass and water.
+
+option.VOLUMETRIC_BLOCKLIGHT=Volumetric Blocklight
+option.VOLUMETRIC_BLOCKLIGHT.comment=Enables blocklights to emit light shafts in the fog. §c[-]§r Can affect performance.
