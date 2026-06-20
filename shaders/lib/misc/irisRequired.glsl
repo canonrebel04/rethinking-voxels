@@ -131,7 +131,9 @@ float innerRadius = pow(func, 1.2) * 0.08 + 0.18;
 if (len < innerRadius)
 return;
 
-int colorIndex = int(floor(fract(angle / 2.0 / PI - pow((len - 0.35) / 0.5, 2.0) * 0.3) * 16.0));
+// ⚡ Bolt: Use inline multiplication instead of pow(..., 2.0) for faster evaluation. common.glsl's pow2() is available in final.glsl, but we do inline here just to be safe as this file might be included elsewhere.
+float lenDist = (len - 0.35) / 0.5;
+int colorIndex = int(floor(fract(angle / 2.0 / PI - (lenDist * lenDist) * 0.3) * 16.0));
 
 color = LOGO_COLORS[colorIndex];
 if (len > outerRadius - 0.05)
