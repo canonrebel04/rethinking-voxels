@@ -188,8 +188,17 @@ option.ADVANCED_LIGHT_TRACING.comment=Toggles between two different methods of c
 value.ADVANCED_LIGHT_TRACING.0=Per-Block
 value.ADVANCED_LIGHT_TRACING.1=Per-Pixel
 
+option.VOLUMETRIC_BLOCKLIGHT=Volumetric Blocklight
+option.VOLUMETRIC_BLOCKLIGHT.comment=Enables volumetric light shafts from block lights. Adds atmosphere to indoor and underground areas. Disabling it can improve performance.
+
 option.BLOCKLIGHT_SOURCE_SIZE=Blocklight Source Size
 option.BLOCKLIGHT_SOURCE_SIZE.comment=Controls softness of shadows cast by block light sources. Needs pixel perfect shadows.
+
+option.DENOISING=Denoising
+option.DENOISING.comment=Enables spatial denoising to reduce noise from ray-traced effects. May cause ghosting or blurriness.
+
+option.TRANSLUCENT_LIGHT_CONDUCTION=Translucent Light Conduction
+option.TRANSLUCENT_LIGHT_CONDUCTION.comment=Controls how much blocklight travels through translucent blocks (like glass or leaves) in basic light propagation mode.
 
 option.CORRECT_CUBOID_OFFSETS=Cuboid-aware Shadow Softness
 option.CORRECT_CUBOID_OFFSETS.comment=If enabled, shadows cast by cuboid shaped light sources will have correct directional softness.
