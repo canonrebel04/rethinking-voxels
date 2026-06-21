@@ -1,0 +1,3 @@
+## 2024-06-21 - Minecraft Shaderpack UI Configuration
+**Learning:** In this specific repository (a Minecraft shaderpack), the UX work involves configuring the shader options menus in `shaders.properties`, rather than standard web components like JSX. Orphaned `.lang` strings often indicate a setting that needs to be added to the property tree (e.g., exposing a setting by adding it to a missing `screen` mapping) to be accessible to users.
+**Action:** When working in this codebase, cross-reference localization strings (`en_US.lang`) against the UI hierarchy (`shaders.properties`) to identify and expose inaccessible settings to improve the settings UX.
