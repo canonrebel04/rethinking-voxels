@@ -1,0 +1,3 @@
+## 2024-06-26 - Orphaned Localizations as UX Indicators
+**Learning:** In heavily configured projects like shaderpacks, orphaned localization strings (keys present in `.lang` files but absent from UI property trees like `shaders.properties`) often indicate inaccessible but fully functional settings. This represents a hidden UX opportunity where users are deprived of intended features.
+**Action:** When auditing configurations, cross-reference localized string keys against the active UI hierarchy to discover "hidden" settings that can be exposed to improve user control. Ensure to utilize existing spacing placeholders (like `<empty>`) to preserve intended UI layouts when reintroducing these settings.
