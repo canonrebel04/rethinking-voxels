@@ -29,7 +29,9 @@ bool getOcclusion(int lightPointer, vec3 pos0) {
 	vec3 dir = thisLight.pos - pos0;
 	float brightness = length(dir);
 	float lightBrightness = thisLight.brightnessMat >> 16;
-	brightness = 0.0625 * lightBrightness * pow(max(0, 1 - brightness / lightBrightness), 2);
+	// ⚡ Bolt: Use explicit multiplication instead of pow(x, 2) for performance and safety
+	float temp = max(0.0, 1.0 - brightness / lightBrightness);
+	brightness = 0.0625 * lightBrightness * (temp * temp);
 	if (brightness < 0.01) return false;
 	#ifdef ACCURATE_RT
 		ray_hit_t rayHit = betterRayTrace(pos0, dir, colortex15);
