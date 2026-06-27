@@ -1,0 +1,3 @@
+## 2024-06-27 - Identifying Missing Shader UI Options via Orphaned Lang Entries
+**Learning:** In projects where UI screens and property menus are configured in `.properties` files (like `shaders.properties`) and localized in `.lang` files, discovering orphaned `.lang` string entries that map to `option.[NAME]` without a corresponding `[NAME]` present in the `.properties` file is a powerful way to identify UX functionality that has been coded but left inaccessible to users.
+**Action:** Always cross-reference string localization files (`.lang`) with UI layout definitions (`.properties`) using tools like `comm` to quickly unearth missing features or hidden settings.
