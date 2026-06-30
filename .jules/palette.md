@@ -1,0 +1,3 @@
+## 2024-05-24 - Exposing Hidden Slider Configurations in Property-Driven UIs
+**Learning:** Orphaned localization strings in `.lang` files (like `WORLD_OUTLINE_SETTINGS` and `WORLD_OUTLINE_THICKNESS`) often indicate missing or incorrectly mapped screen configurations in property-driven UIs like `shaders.properties`. This leaves intended settings inaccessible to users.
+**Action:** When working on shaderpack UIs, cross-reference `.lang` strings against `shaders.properties` layouts. If options are missing from screens, add a sub-menu or place them in appropriate empty spaces (replacing `<empty>`) to expose the controls while preserving grid alignment.
