@@ -1,0 +1,3 @@
+## 2026-07-01 - GLSL pow() micro-optimization
+**Learning:** For GLSL performance optimization when replacing 'pow(x, 2)' or 'pow(x, 2.0)', explicitly extract complex expressions into a local variable and multiply it by itself (e.g., `float t = max(...); result = t * t;`). This universally safe pattern avoids macro double-evaluation risks associated with custom functions like 'pow2(x)' and bypasses micro-optimization issues since modern compilers often automatically simplify 'pow(x, 2.0)' to 'x * x'.
+**Action:** Replace `pow(expr, 2.0)` with `float t = expr; t * t` to ensure performance benefits across all GLSL compilers without risk of macro issues.
