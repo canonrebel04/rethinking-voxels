@@ -1,0 +1,3 @@
+## 2024-07-03 - Exposing Orphaned UI Settings
+**Learning:** In property-driven shader UIs (like OptiFine/Iris), options defined in `.lang` files can become "orphaned" if they aren't explicitly mapped into the visual screen hierarchy in `shaders.properties`. This creates an inaccessible setting that users can't toggle. Finding these requires cross-referencing lang keys against the property options tree.
+**Action:** When working on shader menus, use `comm` or `grep` to cross-reference `.lang` files with `.properties` to proactively identify missing/inaccessible settings and expose them in relevant sub-menus by replacing `<empty>` layout spacers.
