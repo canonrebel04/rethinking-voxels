@@ -25,7 +25,8 @@ for (int j = 0; j < repeat; j++) {
 		float rotation = (i - 0.1 * i + 0.71 * i - 11 * i + 21) * 0.01 + i * 0.01;
 		float Cos = cos(radians(rotation));
 		float Sin = sin(radians(rotation));
-		vec2 offset = vec2(0.0, 1.0/(3600.0/24.0)) * pow(16.0 - i, 2.0) * 0.004;
+		float t_offset = 16.0 - float(i);
+		vec2 offset = vec2(0.0, 1.0/(3600.0/24.0)) * (t_offset * t_offset) * 0.004; // ⚡ Bolt: Replace pow(x, 2.0) with explicit multiplication
 
 		vec3 wpos = normalize((gbufferModelViewInverse * vec4(viewPos * (i * dismult + 1), 1.0)).xyz);
 		if (abs(NdotU) > 0.9) {

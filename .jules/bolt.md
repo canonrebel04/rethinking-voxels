@@ -1,0 +1,3 @@
+## 2024-05-24 - GLSL `pow(x, 2)` Performance Antipattern
+**Learning:** Using `pow(x, 2)` or `pow(x, 2.0)` is a common micro-optimization antipattern in GLSL that can incur unnecessary macro double-evaluation risks or instruction overhead depending on the compiler. While some modern compilers optimize it to `x * x`, replacing it with an explicit local variable and multiplication (e.g., `float t = max(...); result = t * t;`) is universally safer, guarantees optimal performance, and avoids type confusion between floats and integers.
+**Action:** When identifying `pow(x, 2)` operations in shader code, manually extract complex expressions into a well-named local variable (to ensure single evaluation) and use explicit multiplication `t * t` instead.
