@@ -1,0 +1,3 @@
+## 2026-07-05 - Exposed World Outline Thickness Settings
+**Learning:** In Minecraft shaderpacks (Iris/OptiFine format), some localized and coded settings (like `WORLD_OUTLINE_THICKNESS`) may exist in `.lang` and `.glsl` files but remain completely inaccessible to users because they are missing from the `screen.` hierarchy in `shaders.properties`.
+**Action:** When looking for UX improvements in shaderpacks, cross-referencing `.lang` option entries with `shaders.properties` is an effective way to discover and expose "orphaned" settings, improving customizability without writing new rendering code.
