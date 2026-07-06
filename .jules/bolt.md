@@ -1,0 +1,3 @@
+## 2024-07-06 - GLSL Type Casting & pow() Optimization
+**Learning:** In GLSL, mixing integer (`0`, `1`, `2`) and float types in functions like `max()` or mathematical operations is risky and can cause shader compilation errors on strict compilers. Furthermore, `pow(x, 2)` (or even `pow(x, 2.0)`) can be slower than explicit multiplication (`x * x`). While some macros exist like `pow2()`, they can cause double evaluation.
+**Action:** Replace `pow(expression, 2)` with explicit multiplication by extracting the `expression` into a local float variable (e.g., `float t = max(0.0, 1.0 - ...); result = t * t;`). Ensure literals like `0` and `1` inside `max` and arithmetic operations are explicitly cast to float (`0.0`, `1.0`).
