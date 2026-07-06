@@ -1,0 +1,3 @@
+## 2024-07-06 - Exposing Orphaned Shader Options
+**Learning:** In Minecraft shaderpacks using `shaders.properties`, options that exist in `.lang` files but aren't mapped in a `screen.[NAME]` definition become orphaned and inaccessible to the user. Grouping related options (e.g., a toggle and its corresponding slider) into sub-menus (e.g., `[SCREEN_NAME]`) within the property tree is an effective pattern to expose these orphaned settings while keeping the main menus uncluttered.
+**Action:** When auditing `shaders.properties` against `.lang` files, always look for related parameters (like `_THICKNESS` or `_COL`) that are missing from the screen definitions and group them into logical sub-menus to enhance UX without overcrowding the top-level screens.
