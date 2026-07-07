@@ -112,11 +112,12 @@ void main() {
 						}
 					}
 
-					float ndotl = sqrt(max(0, dot(normDir, normalDepthData.xyz)));
+					float ndotl = sqrt(max(0.0, dot(normDir, normalDepthData.xyz)));
 
 					float brightness = length(dir);
 					float lightBrightness = thisLight.brightnessMat >> 16;
-					brightness = max(ndotl, sssBrightness) * 0.0625 * lightBrightness * pow(max(0, 1 - brightness / lightBrightness), 2);
+					float t = max(0.0, 1.0 - brightness / lightBrightness);
+					brightness = max(ndotl, sssBrightness) * 0.0625 * lightBrightness * t * t;
 					if (brightness > 0.01) {
 						vec3 thisLightColor = vec3(
 							thisLight.packedColor % 256,
