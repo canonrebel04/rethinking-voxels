@@ -1,0 +1,3 @@
+## 2024-06-25 - Exposing Missing Shader Options
+**Learning:** Some shader settings (like WORLD_OUTLINE_THICKNESS) may exist in the `.lang` file with user-friendly names and tooltips, but are entirely missing from `shaders.properties` `screen.*` definitions. This makes them invisible and inaccessible in the UI.
+**Action:** When working on shader packs without a traditional frontend, cross-referencing `.lang` option strings against `screen.*` assignments in `shaders.properties` is a fast way to find orphaned settings that need to be exposed. Grouping related options (like a toggle and its thickness slider) into a new sub-menu (e.g., `[WORLD_OUTLINE_SETTINGS]`) cleans up the main menus while making the orphaned settings accessible.
