@@ -1,0 +1,3 @@
+## 2026-07-08 - GLSL pow(x, 2) Optimization
+**Learning:** Replacing `pow(x, 2)` (or `pow(x, 2.0)`) with a local variable extraction and `t * t` multiplication avoids macro double-evaluation risks if a macro is substituted, bypasses potential compiler micro-optimization issues where older GLSL compilers might treat it as a general power function (which is much slower than simple multiplication), and safely handles GLSL type mismatch edge cases by forcing explicit floats in functions like `max`.
+**Action:** When optimizing shader performance, prefer extracting complex expressions to a local variable and performing explicit multiplication `(t * t)` instead of using built-in `pow(x, 2.0)` or a custom `pow2(x)` macro.
