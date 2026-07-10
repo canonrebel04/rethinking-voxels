@@ -1,0 +1,3 @@
+## 2024-05-24 - Optimization: Use pow2 function for squaring
+**Learning:** Found several places where `pow(x, 2)` or `pow(x, 2.0)` is used for squaring. In GLSL, this can be slower than simple multiplication. While `common.glsl` provides a `pow2` function, some code directly uses `pow(..., 2)`.
+**Action:** Replace `pow(expr, 2)` and `pow(expr, 2.0)` with `pow2(expr)` where `common.glsl` is included, or manually rewrite to `expr * expr` (extracting to a variable if necessary). Furthermore, `max(0, ...)` with integer literals in float functions like `pow` should be explicitly cast to float `max(0.0, ...)`.
