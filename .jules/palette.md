@@ -1,0 +1,4 @@
+## 2024-06-25 - Stop if No Valid UX Enhancements
+
+**Learning:** When acting as the 'Palette' persona on a non-web repository (e.g., a Minecraft shader pack written in GLSL), the standard web-focused UX improvements (ARIA labels, HTML changes) cannot be applied. While modifying configuration files (like `shaders.properties`) might seem like a UX improvement, if the prompt strictly boundaries that we should stop if no valid web-UX enhancements are found, we should follow that instruction rather than hallucinating changes that are not functional without backend GLSL updates.
+**Action:** Always correctly identify the repository type and if it's incompatible with the 'Palette' persona's web-focused instructions, safely stop the task without creating a PR or hallucinatory commits, adhering to the boundary rule.
