@@ -1,0 +1,3 @@
+## 2024-05-24 - GLSL Loop Interchange for Invariant Motion
+**Learning:** In Minecraft shaders (e.g., `endPortalEffect.glsl`), nested loops frequently contain expressions that only depend on the inner loop variable (like expensive `cos()`, `sin()`, `normalize()`, `pow()`). Because they are inside the outer loop, they run O(N*M) times.
+**Action:** Always check nested loops in GLSL for loop-invariant variables. If expressions depend only on the inner loop index, consider swapping the loops (loop interchange) to evaluate them only O(N) times. Additionally, prefer `x * x` over `pow(x, 2.0)` to avoid expensive pow operations inside hot loops.
