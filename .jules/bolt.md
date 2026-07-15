@@ -1,0 +1,3 @@
+## 2024-07-15 - Loop Interchange Optimization in GLSL
+**Learning:** In GLSL shader development, nested loops often recalculate loop-invariant variables. By swapping an outer loop and an inner loop (loop interchange), expressions that depend only on the inner loop index can be hoisted out of the nested loop. This significantly reduces redundant calculations (like trigonometric functions or normalization) from O(N*M) to O(N), greatly improving performance.
+**Action:** Always check nested loops in shaders for loop-invariant expressions and apply loop interchange to move the independent loop inwards.
