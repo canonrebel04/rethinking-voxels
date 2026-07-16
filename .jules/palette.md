@@ -1,0 +1,3 @@
+## 2024-05-24 - Organize related shader properties into a logical sub-menu
+**Learning:** In Minecraft shader packs, slider options can become inaccessible to users if they are not explicitly exposed via `shaders.properties` even if they have entries in the lang file. Grouping these orphaned settings alongside their related top-level toggle creates a more accessible configuration tree.
+**Action:** When discovering an orphaned slider setting, create a new sub-menu that replaces the original setting's top-level layout slot, thereby exposing both the toggle and related settings logically together in the configuration UI.
