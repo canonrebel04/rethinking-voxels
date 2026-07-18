@@ -1,0 +1,3 @@
+## 2024-11-20 - Use pow2 over pow(x, 2) in GLSL
+**Learning:** In GLSL, using the generic `pow(x, 2)` instead of multiplying the value by itself or using an overloaded `pow2(x)` is a common anti-pattern that can incur unnecessary performance overhead. Furthermore, mixing integer and float literals in functions like `max(0, 1 - ...)` forces implicit conversions and should be avoided (`max(0.0, 1.0 - ...)`).
+**Action:** When replacing `pow(x, 2)`, utilize the `pow2(x)` function if `common.glsl` is in scope, or manually expand it to `x * x` using a temporary variable if the expression is complex. Always use explicit float literals when working with float values.
