@@ -1,0 +1,3 @@
+## 2024-07-18 - Organize Shader Options into Logical Sub-menus
+**Learning:** In Minecraft shader packs, organizing related UI options (e.g., a toggle and its associated slider) into logical sub-menus within `shaders.properties` (e.g., replacing a top-level option with a menu reference like `[OPTION_SETTINGS]`) cleans up the interface and exposes previously orphaned settings like thickness sliders.
+**Action:** When adding or discovering orphaned `.lang` strings for related settings, proactively group them by replacing the base option in the parent menu with a sub-menu mapping and defining the layout on a new `screen.OPTION_SETTINGS=` line to maintain a tidy UI and expose the settings.
