@@ -1,0 +1,3 @@
+## 2024-05-18 - Avoid pow(x, 2) in GLSL, use pow2(x) overloaded function
+**Learning:** Using `pow(x, 2)` or `pow(x, 2.0)` is often less efficient in GLSL than explicitly multiplying `x * x`. In this codebase, there is a `pow2(x)` function in `common.glsl` (implemented using function overloading instead of macros, avoiding double-evaluation risks) that provides an optimized and safe replacement. Also, ensure type safety when mixing ints and floats inside `max()` by using float literals like `0.0`.
+**Action:** When optimizing shader performance, actively search for and replace instances of `pow(x, 2)` with `pow2(x)` or manual multiplication, and correct missing float literals in surrounding math operations.
