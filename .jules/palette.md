@@ -1,0 +1,3 @@
+## 2024-07-22 - Exposing Orphaned Settings via Sub-menus
+**Learning:** In Minecraft shaderpacks, adding sliders to the `sliders` list doesn't make them appear in the UI. If a setting's `screen` mapping is missing, it's completely inaccessible, even if fully configured in code and localized. Grouping a toggle and its orphaned slider into a new sub-menu (using `[MENU_NAME]`) cleans up the parent screen while resolving the accessibility issue.
+**Action:** Cross-reference `en_US.lang` for settings (like `WORLD_OUTLINE_THICKNESS`) that have language entries but are missing from `screen` definitions in `shaders.properties`. Wrap the parent toggle in brackets (e.g., `[WORLD_OUTLINE_SETTINGS]`) and map the sub-menu to include both the toggle and its slider.
