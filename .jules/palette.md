@@ -1,0 +1,3 @@
+## 2024-07-23 - Organizing Related UI Settings into Sub-Menus
+**Learning:** Orphaned settings in shader UI (like `WORLD_OUTLINE_THICKNESS`) that have `.lang` definitions but no `screen` mapping remain inaccessible to users. Replacing a top-level toggle (`WORLD_OUTLINE`) with a logical sub-menu (`[WORLD_OUTLINE_SETTINGS]`) effectively exposes the orphaned settings without cluttering the main menu.
+**Action:** Always cross-reference `.lang` files with `shaders.properties` to find hidden settings, and use sub-menus to group related settings logically, ensuring users have access to all intended customization options.
