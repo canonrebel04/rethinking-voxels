@@ -1,0 +1,3 @@
+## 2024-05-24 - Shader Options UX Visibility Improvement
+**Learning:** Missing/orphaned localization entries in `.lang` files indicate shader settings that are inaccessible to users. Cross-referencing against the configuration UI mapping is an effective way to identify and expose them. Grouping related options (e.g. shadow settings) into sub-menus cleans up the main layout and enhances accessibility.
+**Action:** Always search for orphaned settings in localization files when looking for immediate UX improvements. Create sub-menus in `.properties` files to expose related settings logically without cluttering top-level menus.
