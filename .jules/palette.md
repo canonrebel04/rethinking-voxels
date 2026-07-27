@@ -1,0 +1,3 @@
+## 2024-07-27 - Exposing Hidden Options in UI Configurations
+**Learning:** Users cannot utilize features, regardless of their implementation quality or localization completeness, if the configuration UI options are hidden or orphaned from the primary property tree mapping. Cross-referencing localization `.lang` keys against `shaders.properties` screen mappings is an effective way to programmatically identify these UX dead-ends.
+**Action:** Proactively audit configuration trees for orphaned settings during UX reviews to ensure all intended features are accessible to the user without requiring manual config file edits.
