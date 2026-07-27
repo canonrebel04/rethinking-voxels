@@ -1,0 +1,3 @@
+## 2024-05-24 - Optimize pow(x, 2) and Type Casts in GLSL
+**Learning:** In GLSL, `pow(x, 2)` is often more expensive than `x * x`. Also, mixing integer and float literals in functions like `max()` (e.g. `max(0, 1 - floatVar)`) can cause type compatibility issues or implicit cast overheads. `common.glsl` provides an overloaded `pow2()` function that avoids macro double-evaluation risks.
+**Action:** Always prefer `pow2(x)` from `common.glsl` for squaring values. Ensure integer variables or literals mixed with floats in math or functions are explicitly cast or written as float literals (e.g., `0.0` instead of `0`).
