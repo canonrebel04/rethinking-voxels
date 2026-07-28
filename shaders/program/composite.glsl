@@ -220,19 +220,6 @@ void main() {
 		color *= GetBloomFog(lViewPos); // Reminder: Bloom Fog moves between composite and composite2 depending on Motion Blur
 	#endif
 	
-	/*//if (texCoord.x < 0.25 && texCoord.y < 0.25)
-	vec4 wpos = vec4(shadowModelView[3][0], shadowModelView[3][1], shadowModelView[3][2], shadowModelView[3][3]);
-	wpos = shadowProjection * wpos;
-	wpos /= wpos.w;
-	vec4 shadowPosition = DistortShadow(wpos, 1.0 - shadowMapBias);
-	float checkS = texture2D(shadowtex0, texCoord).x;
-	vec3 checkColor = vec3(1.0 - checkS);
-	checkColor *= mix(vec3(0,1,0), vec3(0,0,1), clamp((checkS-shadowPosition.z)*65536.0,0.0,1.0));
-	if (checkS > 0.55) checkColor = vec3(checkColor.g + checkColor.b,0,0) * 3.0;
-	color += checkColor * 2.0;*/
-
-	//if (texCoord.y < 0.05 && vlFactor > texCoord.x) color = vec3(1,0,1);
-
 	/* DRAWBUFFERS:0 */
 	gl_FragData[0] = vec4(color, 1.0);
 	
