@@ -1,0 +1,3 @@
+## 2024-05-24 - Exposing Hidden Options via Sub-menus
+**Learning:** I discovered that some settings (like WORLD_OUTLINE_THICKNESS) are defined in .lang files and shaders but remain completely inaccessible in the UI because they aren't mapped to a screen in shaders.properties. Grouping a primary toggle and its related settings into a sub-menu cleans up the interface while safely exposing hidden functionality.
+**Action:** When finding orphaned .lang settings, locate their parent toggle in shaders.properties and create a sub-menu (e.g., [SETTING_NAME_SETTINGS]) to group them together, improving menu organization and feature discoverability.
