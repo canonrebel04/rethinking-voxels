@@ -1,0 +1,3 @@
+## 2024-05-24 - Loop Interchange in GLSL
+**Learning:** In GLSL, nested loops where the inner loop depends heavily on the outer loop index can cause massive redundant recalculation of loop-invariant variables (e.g. `normalize`, `cos`, `sin`, matrix creation). Furthermore, standard `pow(x, 2.0)` is often less efficient than explicitly using a `pow2` function, but must be safely implemented as an overloaded function (not a macro) to avoid double-evaluation risks as seen in `common.glsl`.
+**Action:** Always check nested loops for loop-invariant variables that depend only on one loop index and swap the loops (loop interchange) to move the independent loop inwards. Replace `pow(x, 2.0)` with `pow2(x)` when `common.glsl` is in scope.
