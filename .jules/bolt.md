@@ -1,0 +1,3 @@
+## 2024-05-24 - End Portal Effect Optimization
+**Learning:** Found a nested loop `O(N*M)` executing computationally expensive GLSL operations (like `cos`, `sin`, `normalize`, matrix transformations) that were loop-invariant for the outer loop.
+**Action:** Swapped the inner and outer loop (`O(M*N)` to `O(M) * N`) to calculate loop invariants only `O(M)` times. I also replaced `pow(..., 2.0)` with `pow2(...)` using the local shader library's faster overloaded function instead of standard `pow`. Replaced integer usages with explicitly cast `float(i)` inside math functions to prevent potential compiler casting overhead or errors.
