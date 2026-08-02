@@ -1,0 +1,3 @@
+## 2024-08-02 - GLSL pow(x, 2) optimization with overloaded pow2()
+**Learning:** In this codebase, substituting `pow(x, 2)` with `pow2(x)` is safe even for complex expressions like `max(...)` because `pow2` is defined in `common.glsl` as an overloaded function (e.g., `float pow2(float x)`), not a macro. This natively avoids macro double-evaluation risks while removing expensive `pow` calls. Additionally, implicit integer-to-float conversions inside `max(0, ...)` should be explicitly updated to `max(0.0, 1.0 - ...)` for GLSL safety.
+**Action:** Replace `pow(expr, 2)` with `pow2(expr)` where `common.glsl` is included, and fix implicit integer casting in surrounding math.
