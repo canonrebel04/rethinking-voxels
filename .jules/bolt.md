@@ -1,0 +1,3 @@
+## 2026-08-05 - GLSL pow2 vs pow Optimization
+**Learning:** This codebase defines `pow2` in `common.glsl` as an overloaded function (not a macro), which makes it safe to use without double-evaluation risks. Furthermore, replacing `pow(..., 2.0)` and `pow(..., 2)` with `pow2(...)` is a standard optimization that improves performance by replacing a potentially expensive `pow` intrinsic call with a simple multiplication, but it requires verifying that `common.glsl` is in scope.
+**Action:** Replace instances of `pow(X, 2)` and `pow(X, 2.0)` with `pow2(X)` across the shaderpack where `common.glsl` is included, explicitly noting in the PR description that this optimization is safe from double-evaluation because `pow2` is a proper overloaded function here.
