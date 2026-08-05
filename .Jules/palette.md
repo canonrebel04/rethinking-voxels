@@ -1,0 +1,3 @@
+## 2024-08-05 - Exposing Orphaned UI Settings
+**Learning:** In Minecraft shaderpacks (like Rethinking Voxels), UI settings can become orphaned if they are defined in localization files (.lang) but not mapped to the property tree in shaders.properties. Identifying these by cross-referencing and carefully replacing <empty> spacers preserves layout while making the settings accessible.
+**Action:** Write a Python script to cross-reference .lang keys (ignoring .comment) against tokens in shaders.properties (ignoring <empty>, <profile>, and [MENU_NAME]) to systematically identify and restore missing settings without breaking the columnar UI grid.
