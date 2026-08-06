@@ -33,7 +33,7 @@ for fname in fnames:
         if (line[:6] == "#endif"):
             ifd -= 1
         if line == "": cleancontent.append("")
-        else: cleancontent.append("".join(["\t" for k in range(min(cbr, ocbr) + min(rbr, orbr) + min(ifd, oifd))]) + line)
+        else: cleancontent.append("\t" * (min(cbr, ocbr) + min(rbr, orbr) + min(ifd, oifd)) + line)
     with open("tts_tmp/" + fname[:-1], "w") as f:
         f.write("\n".join(cleancontent))
 
