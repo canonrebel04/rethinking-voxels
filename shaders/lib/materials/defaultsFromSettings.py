@@ -97,24 +97,24 @@ for shaderFileName in shaderFileNames:
     for k, line in enumerate(shaderFile0):
         i = line.find("#define")
         if i > -1:
-            for setting in settings.keys():
+            for setting, value in settings.items():
                 j = len(setting)+i+9
                 if line[i+8:j-1] == setting:
-                    if settings[setting] in ("true", "false"):
+                    if value in ("true", "false"):
                         l = line[:i].find("//")
-                        if settings[setting] == "true" and l > -1:
+                        if value == "true" and l > -1:
                             print(f"Changing {setting} from false to true")
                             shaderFile0[k] = shaderFile0[k][:l] + shaderFile0[k][l+2:]
                             changed = True
-                        elif settings[setting] == "false" and l == -1:
+                        elif value == "false" and l == -1:
                             print(f"Changing {setting} from true to false")
                             shaderFile0[k] = shaderFile0[k][:i] + "//" + shaderFile0[k][i:]
                             changed = True
                     else:
                         oldval = line[j:].split(" ")[0]
-                        if oldval != settings[setting]:
-                            print(f"Changing {setting} from {oldval} to {settings[setting]}")
-                            shaderFile0[k] = shaderFile0[k][:j] + settings[setting] + shaderFile0[k][j+len(oldval):]
+                        if oldval != value:
+                            print(f"Changing {setting} from {oldval} to {value}")
+                            shaderFile0[k] = shaderFile0[k][:j] + value + shaderFile0[k][j+len(oldval):]
                             changed = True
     if changed:
         with open(".".join(shaderFileName.split(".")[:-1]) + suffix + "." + shaderFileName.split(".")[-1], "w") as outFile:
