@@ -6,13 +6,13 @@ os.system("find * -name '*.glsl' >> filelist.tmp")
 with open("filelist.tmp" ) as lf:
     fnames = lf.readlines()
 dirtree = (".", [])
-os.system("mkdir tts_tmp")
+os.makedirs("tts_tmp", exist_ok=True)
 for fname in fnames:
     try:
         with open(fname[:-1], "r") as f:
             content = f.readlines()
     except:
-        os.system("mkdir tts_tmp/" + fname)
+        os.makedirs(os.path.join("tts_tmp", fname[:-1]), exist_ok=True)
         continue
     cbr = 0
     rbr = 0
