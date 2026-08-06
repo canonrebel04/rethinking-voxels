@@ -1,19 +1,7 @@
 import sys
 import os
-os.system("rm -r tts_tmp")
-os.system("find * -xtype d > filelist.tmp")
-os.system("find * -name '*.glsl' >> filelist.tmp")
-with open("filelist.tmp" ) as lf:
-    fnames = lf.readlines()
-dirtree = (".", [])
-os.makedirs("tts_tmp", exist_ok=True)
-for fname in fnames:
-    try:
-        with open(fname[:-1], "r") as f:
-            content = f.readlines()
-    except:
-        os.makedirs(os.path.join("tts_tmp", fname[:-1]), exist_ok=True)
-        continue
+
+def format_content(content):
     cbr = 0
     rbr = 0
     ifd = 0
@@ -34,6 +22,28 @@ for fname in fnames:
             ifd -= 1
         if line == "": cleancontent.append("")
         else: cleancontent.append("\t" * (min(cbr, ocbr) + min(rbr, orbr) + min(ifd, oifd)) + line)
-    with open("tts_tmp/" + fname[:-1], "w") as f:
-        f.write("\n".join(cleancontent))
+    return cleancontent
+
+def main():
+    os.system("rm -r tts_tmp")
+    os.system("find * -xtype d > filelist.tmp")
+    os.system("find * -name '*.glsl' >> filelist.tmp")
+    with open("filelist.tmp" ) as lf:
+        fnames = lf.readlines()
+    dirtree = (".", [])
+    os.makedirs("tts_tmp", exist_ok=True)
+    for fname in fnames:
+        try:
+            with open(fname[:-1], "r") as f:
+                content = f.readlines()
+        except:
+            os.makedirs(os.path.join("tts_tmp", fname[:-1]), exist_ok=True)
+            continue
+
+        cleancontent = format_content(content)
+        with open("tts_tmp/" + fname[:-1], "w") as f:
+            f.write("\n".join(cleancontent))
+
+if __name__ == "__main__":
+    main()
 
