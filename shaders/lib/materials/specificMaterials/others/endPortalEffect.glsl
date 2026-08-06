@@ -18,17 +18,22 @@ float dither = Bayer64(gl_FragCoord.xy);
 	int repeat = 8;
 #endif
 float dismult = 0.5;
-for (int j = 0; j < repeat; j++) {
-	float add = float(j + dither) * 0.0625 / float(repeat);
-	for (int i = 1; i <= 8; i++) {
-		float colormult = 0.9/(30.0+i);
-		float rotation = (i - 0.1 * i + 0.71 * i - 11 * i + 21) * 0.01 + i * 0.01;
-		float Cos = cos(radians(rotation));
-		float Sin = sin(radians(rotation));
-		float t1 = 16.0 - i;
-		vec2 offset = vec2(0.0, 1.0/(3600.0/24.0)) * (t1 * t1) * 0.004;
+for (int i = 1; i <= 8; i++) {
+	float colormult = 0.9/(30.0+i);
+	float rotation = (i - 0.1 * i + 0.71 * i - 11 * i + 21) * 0.01 + i * 0.01;
+	float Cos = cos(radians(rotation));
+	float Sin = sin(radians(rotation));
+	float t1 = 16.0 - i;
+	vec2 offset = vec2(0.0, 1.0/(3600.0/24.0)) * (t1 * t1) * 0.004;
 
-		vec3 wpos = normalize((gbufferModelViewInverse * vec4(viewPos * (i * dismult + 1), 1.0)).xyz);
+	vec3 baseWpos = (gbufferModelViewInverse * vec4(viewPos * (i * dismult + 1), 1.0)).xyz;
+	vec3 wposNormalized = normalize(baseWpos);
+	vec2 wind = fract((frameTimeCounter + 984.0) * (i + 8) * 0.125 * offset);
+	mat2 rotMat = mat2(Cos, Sin, -Sin, Cos);
+
+	for (int j = 0; j < repeat; j++) {
+		float add = float(j + dither) * 0.0625 / float(repeat);
+		vec3 wpos = wposNormalized;
 		if (abs(NdotU) > 0.9) {
 			wpos.xz /= wpos.y;
 			wpos.xz *= 0.06 * sign(- playerPos.y);
@@ -50,8 +55,7 @@ for (int j = 0; j < repeat; j++) {
 		}
 		vec2 pos = wpos.xz;
 
-		vec2 wind = fract((frameTimeCounter + 984.0) * (i + 8) * 0.125 * offset);
-		vec2 coord = mat2(Cos, Sin, -Sin, Cos) * pos + wind;
+		vec2 coord = rotMat * pos + wind;
 		if (mod(float(i), 4) < 1.5) coord = coord.yx + vec2(-1.0, 1.0) * wind.y;
 		
 		vec3 psample = pow(texture2D(gtexture, coord).rgb, vec3(0.85)) * colors[i-1] * colormult;
