@@ -3,3 +3,6 @@
 *_newdefaults*
 *light*.txt
 *~
+__pycache__/
+*.py[cod]
+*.class
