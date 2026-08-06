@@ -352,8 +352,6 @@ void main() {
 												smoothnessD, vec3(0.0), vec3(0.0), vec3(0.0), 0.0);
 
 				vec3 colorAdd = reflection.rgb * reflectColor;
-				//float colorMultInv = (0.75 - intenseFresnel * 0.5) * max(reflection.a, skyLightFactor);
-				//float colorMultInv = max(reflection.a, skyLightFactor);
 				float colorMultInv = 1.0;
 
 				#ifdef IPBR
