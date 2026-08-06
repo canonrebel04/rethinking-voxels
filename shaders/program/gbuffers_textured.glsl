@@ -152,7 +152,6 @@ void main() {
 				color.r *= 1.2;
 			}
 		}
-		//color.rgb = vec3(fract(float(frameCounter) * 0.01), fract(float(frameCounter) * 0.015), fract(float(frameCounter) * 0.02));
 	}
 	bool noSmoothLighting = false;
 	#else
