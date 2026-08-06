@@ -187,12 +187,6 @@ void main() {
 			volumetricLight.rgb *= GetAtmColorMult();
 		#endif
 	#endif
-
-	/*color.rgb = vec3(lViewPos);
-	if (gl_FragCoord.x > 960)
-	color.rgb = vec3(GetApproxDistance(z1));
-	color.rgb *= 0.02;
-	color.rgb = min(color.rgb, vec3(2.0));*/
 	
 	if (isEyeInWater == 1) {
 		if (z0 == 1.0) color.rgb = waterFogColor;
