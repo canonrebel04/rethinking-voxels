@@ -5,12 +5,15 @@ cwd = os.getcwd()
 
 def walkdir(p):
     contents = list(os.listdir(p))
-    for k in range(len(contents)):
-        contents[k] = contents[k]
-        if os.path.isdir(p + "/" + contents[k]):
-            thisContent = contents.pop(k)
-            contents += [thisContent + "/" + f for f in walkdir(p + "/" + thisContent)]
-    return contents
+    files = []
+    for c in contents:
+        full_path = os.path.join(p, c)
+        if os.path.isdir(full_path):
+            sub_files = walkdir(full_path)
+            files.extend([os.path.join(c, f).replace("\\", "/") for f in sub_files])
+        else:
+            files.append(c)
+    return files
 
 inPlace = False
 shaderFileNames = []
