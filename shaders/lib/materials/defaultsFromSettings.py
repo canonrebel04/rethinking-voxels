@@ -100,25 +100,28 @@ for shaderFileName in shaderFileNames:
     for k, line in enumerate(shaderFile0):
         i = line.find("#define")
         if i > -1:
-            for setting in settings.keys():
-                j = len(setting)+i+9
-                if line[i+8:j-1] == setting:
-                    if settings[setting] in ("true", "false"):
-                        l = line[:i].find("//")
-                        if settings[setting] == "true" and l > -1:
-                            print(f"Changing {setting} from false to true")
-                            shaderFile0[k] = shaderFile0[k][:l] + shaderFile0[k][l+2:]
-                            changed = True
-                        elif settings[setting] == "false" and l == -1:
-                            print(f"Changing {setting} from true to false")
-                            shaderFile0[k] = shaderFile0[k][:i] + "//" + shaderFile0[k][i:]
-                            changed = True
-                    else:
-                        oldval = line[j:].split(" ")[0]
-                        if oldval != settings[setting]:
-                            print(f"Changing {setting} from {oldval} to {settings[setting]}")
-                            shaderFile0[k] = shaderFile0[k][:j] + settings[setting] + shaderFile0[k][j+len(oldval):]
-                            changed = True
+            parts = line[i+8:].split(maxsplit=1)
+            if parts:
+                setting = parts[0]
+                if setting in settings:
+                    j = len(setting)+i+9
+                    if line[i+8:j-1] == setting:
+                        if settings[setting] in ("true", "false"):
+                            l = line[:i].find("//")
+                            if settings[setting] == "true" and l > -1:
+                                print(f"Changing {setting} from false to true")
+                                shaderFile0[k] = shaderFile0[k][:l] + shaderFile0[k][l+2:]
+                                changed = True
+                            elif settings[setting] == "false" and l == -1:
+                                print(f"Changing {setting} from true to false")
+                                shaderFile0[k] = shaderFile0[k][:i] + "//" + shaderFile0[k][i:]
+                                changed = True
+                        else:
+                            oldval = line[j:].split(" ")[0]
+                            if oldval != settings[setting]:
+                                print(f"Changing {setting} from {oldval} to {settings[setting]}")
+                                shaderFile0[k] = shaderFile0[k][:j] + settings[setting] + shaderFile0[k][j+len(oldval):]
+                                changed = True
     if changed:
         with open(".".join(shaderFileName.split(".")[:-1]) + suffix + "." + shaderFileName.split(".")[-1], "w") as outFile:
             outFile.write("".join(shaderFile0))
