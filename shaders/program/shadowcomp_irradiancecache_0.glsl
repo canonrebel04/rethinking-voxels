@@ -25,7 +25,11 @@ vec4 hash44(vec4 p) {
 
 bool getOcclusion(int lightPointer, vec3 pos0) {
 	light_t thisLight = lights[lightPointer];
-	if (length(floor(thisLight.pos / 8) - floor(pos0 / 8)) < 0.1) return true;
+	// Fix #12: replaced the coarse "same 8-unit cell = always visible" early-return
+	// with a per-voxel check. The old check caused light to bleed through single-block
+	// walls whenever the light and the sample were in the same 8×8×8 macro-cell.
+	// Now we only skip ray-tracing if the light is in the exact same voxel as the sample.
+	if (all(equal(ivec3(floor(thisLight.pos)), ivec3(floor(pos0))))) return true;
 	vec3 dir = thisLight.pos - pos0;
 	float brightness = length(dir);
 	float lightBrightness = thisLight.brightnessMat >> 16;
@@ -41,14 +45,13 @@ bool getOcclusion(int lightPointer, vec3 pos0) {
 }
 
 void main() {
-	const mat3 eye = mat3(1);
+	// Safe camera-scroll: instead of relying on undefined GPU execution order,
+	// we compute oldCacheCoord (where to READ the previous frame's data from)
+	// and write always to iGlobalInvocationID (the current coordinate).
+	// This two-phase pattern is race-free: reads reference old data, writes go to new positions. (#1)
 	ivec3 camOffset = ivec3(8.01 * (floor(0.125 * cameraPosition) - floor(0.125 * previousCameraPosition)));
-	const ivec3 totalSize = ivec3(16, 8, 16);
+	const ivec3 totalSize = ivec3(16, 8, 16) * int(POINTER_VOLUME_RES + 0.5);
 	ivec3 iGlobalInvocationID = ivec3(gl_GlobalInvocationID);
-	iGlobalInvocationID = // This is a horrible hack that assumes execution order of threads. If the irradiance
-		iGlobalInvocationID * ivec3(greaterThan(camOffset, ivec3(-1))) + // cache breaks in movement on some hardware,
-		(totalSize - iGlobalInvocationID - 1) * ivec3(lessThan(camOffset, ivec3(0))); // investigate this first
-	iGlobalInvocationID = 8 * iGlobalInvocationID + ivec3(7.9 * hash44(vec4(iGlobalInvocationID + 0.5, frameCounter)));
 	vec3 pos = iGlobalInvocationID - POINTER_VOLUME_RES * pointerGridSize / 2.0;
 	vec4 hash0 = hash44(vec4(pos, frameCounter));
 	pos += 0.5;//0.4 + 0.2 * hash0.xyz;

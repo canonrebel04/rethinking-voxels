@@ -46,7 +46,13 @@ void main() {
 			vec3 normPlayerPos = normalize(pos.xyz);
 			pos.xyz = pos.xyz + 8.0 * fract(0.125 * cameraPosition);
 			float posLen = length(pos);
-			pos.xyz += max(0.05, 0.01 * posLen) * normalDepthData.xyz;
+			#ifdef NDOTV_SHADOW_BIAS
+				// NdotV-dependent bias: 1x at perpendicular, 3x at grazing. (#15)
+				float ndotv = max(0.05, abs(dot(normPlayerPos, normalDepthData.xyz)));
+				pos.xyz += max(0.05, 0.01 * posLen) * (1.0 + 2.0 * (1.0 - ndotv)) * normalDepthData.xyz;
+			#else
+				pos.xyz += max(0.05, 0.01 * posLen) * normalDepthData.xyz;
+			#endif
 			if (clamp(pos.xyz, -pointerGridSize * POINTER_VOLUME_RES / 2.0, pointerGridSize * POINTER_VOLUME_RES / 2.0) == pos.xyz) {
 				ivec3 pgc = ivec3(pos.xyz / POINTER_VOLUME_RES + pointerGridSize / 2.0) / 4; // pointer grid coord
 				int lightCount = min(readVolumePointer(pgc, 4), 64);

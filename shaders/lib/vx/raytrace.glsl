@@ -212,8 +212,7 @@
 			) {
 				returnVal.normal = dir;
 				rayColor = handledata(voxeldata, atlas, pos, returnVal.normal, i);
-				if (dot(pos - pos0, dir / dirlen) <= 0.01) rayColor.a = 0;
-				rayColor.rgb *= rayColor.a;
+			rayColor.rgb *= rayColor.a;
 				if (rayColor.a < 0.1) {
 					returnVal.normal = vec3(0);
 				}
@@ -228,8 +227,8 @@
 			vec3 oldPos = pos;
 			bool oldFull = voxeldata.full;
 			bool wasInRange = false;
-			// main loop
-			while (w < 1 && k < 2000 && rayColor.a < 0.999) {
+			// main loop — cap at 256 (worst diagonal ~117 steps; extra room for transparency chains)
+			while (w < 1 && k < 256 && rayColor.a < 0.999) {
 				oldRayColor = rayColor;
 				pos = pos0 + (min(w, 1.0)) * dir + eyeOffsets[i];
 				// read voxel data at new position and update ray colour accordingly
@@ -275,26 +274,28 @@
 				else {
 					if (wasInRange) break;
 				}
-				// update position
+				// advance DDA — branchless min-axis selection (#6)
 				progress[i] += stp[i];
-				w = progress[0];
-				i = 0;
-				for (int i0 = 1; i0 < 3; i0++) {
-					if (progress[i0] < w) {
-						i = i0;
-						w = progress[i];
-					}
-				}
+				// find the axis with smallest progress value, branchlessly
+				bvec3 bsel = lessThan(progress, min(progress.yzx, progress.zxy));
+				i = bsel.x ? 0 : (bsel.y ? 1 : 2);
+				w = progress[i];
 				k++;
 			}
 			float oldAlpha = rayColor.a;
 			rayColor.a = 1 - exp(-4*length(scatterPos - pos0)) * (1 - rayColor.a);
 			rayColor.rgb += rayColor.a - oldAlpha; 
 			pos0 = pos;
-			if (k == 2000) {
-				oldRayColor = vec4(1, 0, 0, 1);
-				rayColor = vec4(1, 0, 0, 1);
-			}
+			#ifdef DEBUG_OVERDRAW
+				// Debug-only: paint overdraw rays bright red so they are visible in dev builds
+				if (k >= 256) {
+					oldRayColor = vec4(1, 0, 0, 1);
+					rayColor    = vec4(1, 0, 0, 1);
+				}
+			#else
+				// Production: treat overdraw as an opaque hit rather than bleeding red
+				if (k >= 256) rayColor.a = 1.0;
+			#endif
 			returnVal.rayColor = rayColor;
 			returnVal.transColor = oldRayColor;
 			returnVal.pos = pos;
@@ -315,28 +316,33 @@
 	}
 
 	vec3 linSolve(mat3 A, vec3 b) {
-		A = transpose(A);
+		// No transpose needed: GLSL mat3 is column-major, A[col][row].
+		// Gaussian elimination treats rows as A[col][row], cols as A[row].
+		// We iterate over pivots by row (outer i), eliminate rows below (inner j).
+		// Removing the old transpose() saves 9 unnecessary assignments per call. (#17)
 		for (int i = 0; i < 2; i++) {
+			// Partial pivoting: find max |A[i][j]| for j > i
 			for (int j = i + 1; j < 3; j++) {
-				if (abs(A[j][i]) > abs(A[i][i])) {
-					vec3 tmp = A[i];
-					A[i] = A[j];
-					A[j] = tmp;
-					float tmp2 = b[i];
-					b[i] = b[j];
-					b[j] = tmp2;
+				if (abs(A[i][j]) > abs(A[i][i])) {
+					// Swap rows i and j (swap columns i and j in transposed sense)
+					vec3 tmp = vec3(A[0][i], A[1][i], A[2][i]);
+					A[0][i] = A[0][j]; A[1][i] = A[1][j]; A[2][i] = A[2][j];
+					A[0][j] = tmp.x;   A[1][j] = tmp.y;   A[2][j] = tmp.z;
+					float tmp2 = b[i]; b[i] = b[j]; b[j] = tmp2;
 				}
 			}
 			for (int j = i + 1; j < 3; j++) {
-				float t = A[j][i] / A[i][i];
-				A[j] -= t * A[i];
-				b[j] -= t * b[i];
+				float t = A[i][j] / A[i][i];
+				A[0][j] -= t * A[0][i];
+				A[1][j] -= t * A[1][i];
+				A[2][j] -= t * A[2][i];
+				b[j]    -= t * b[i];
 			}
 		}
 		for (int j = 1; j >= 0; j--) {
 			for (int i = j + 1; i < 3; i++) {
-				float t = A[j][i] / A[i][i];
-				A[j][i] = 0;
+				float t = A[i][j] / A[i][i];
+				A[i][j] = 0.0;
 				b[j] -= t * b[i];
 			}
 		}
@@ -510,15 +516,11 @@
 						break;
 					}
 				} else if (wasInRange) break;
+				// advance DDA — branchless min-axis selection (#6)
 				progress[i] += stp[i];
-				w = progress[0];
-				i = 0;
-				for (int i0 = 1; i0 < 3; i0++) {
-					if (progress[i0] < w) {
-						i = i0;
-						w = progress[i];
-					}
-				}
+				bvec3 bsel = lessThan(progress, min(progress.yzx, progress.zxy));
+				i = bsel.x ? 0 : (bsel.y ? 1 : 2);
+				w = progress[i];
 			}
 			if (rayColor.a < 0.999) {
 				returnVal.pos = pos0 + dir;

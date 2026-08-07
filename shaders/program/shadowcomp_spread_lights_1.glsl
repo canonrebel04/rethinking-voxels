@@ -18,8 +18,12 @@ void main() {
 			for (int y = lowerBound.y; y <= upperBound.y; y++) {
 				for (int z = lowerBound.z; z <= upperBound.z; z++) {
 					int globalCoord = readVolumePointer(ivec3(x, y, z), 5);
+					// Fix: read capacity BEFORE atomic-increment to prevent
+					// out-of-bounds write into the next cell's data when
+					// multiple invocations race on the same slot. (#3)
+					int capacity = readVolumePointer(ivec3(x, y, z), 4);
 					int localCoord = incrementLightPointer(globalCoord);
-					if (localCoord <= readVolumePointer(ivec3(x, y, z), 4))
+					if (localCoord <= capacity)
 						writeLightPointer(globalCoord + localCoord, int(gl_GlobalInvocationID.x));
 				}
 			}

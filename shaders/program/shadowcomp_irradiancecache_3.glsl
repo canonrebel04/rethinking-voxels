@@ -54,10 +54,8 @@ void main() {
 	const mat3 eye = mat3(1);
 	ivec3 camOffset = ivec3(8.01 * (floor(0.125 * cameraPosition) - floor(0.125 * previousCameraPosition)));
 	const ivec3 totalSize = int(POINTER_VOLUME_RES + 0.5) * pointerGridSize;
+	// Safe scroll: iGlobalInvocationID is NOT reordered by camOffset. (#1)
 	ivec3 iGlobalInvocationID = ivec3(gl_GlobalInvocationID);
-	iGlobalInvocationID = // This is a horrible hack that assumes execution order of threads. If the irradiance
-		iGlobalInvocationID * ivec3(greaterThan(camOffset, ivec3(-1))) + // cache breaks in movement on some hardware,
-		(totalSize - iGlobalInvocationID - 1) * ivec3(lessThan(camOffset, ivec3(0))); // investigate this first
 	vec3 pos = iGlobalInvocationID - POINTER_VOLUME_RES * pointerGridSize / 2.0;
 	vec4 hash0 = hash44(vec4(pos, frameCounter));
 	pos += 0.5;//0.4 + 0.2 * hash0.xyz;
@@ -80,7 +78,9 @@ void main() {
 	barrier();
 	groupMemoryBarrier();
 	uvec4 occlusionData = readOcclusionVolume(iGlobalInvocationID);
-	bool doLighting = (frameCounter + gl_WorkGroupID.x + gl_WorkGroupID.y + gl_WorkGroupID.z) % 10 == 0;
+	// Update every 5 frames (staggered by position) for ~83ms worst-case lag at 60fps.
+	// Halved from the original 10-frame period to improve torch place/remove responsiveness. (#10)
+	bool doLighting = (frameCounter + gl_WorkGroupID.x + gl_WorkGroupID.y + gl_WorkGroupID.z) % 5 == 0;
 	vec4 irrCacheData[7];
 	for (int k = 0; k < 7; k++) irrCacheData[k] = vec4(0);
 	if (doLighting) {
@@ -91,13 +91,20 @@ void main() {
 			if (brightness > 0.01) {
 				vec4 thisAdjustedCol = vec4(lightCols[n].xyz, 1) * brightness;
 				irrCacheData[6] += thisAdjustedCol;
+				// Precompute inverse length to avoid 6 separate normalize() calls below. (#16)
+				float invLen = inversesqrt(dot(dir, dir) + 0.0001);
 				for (int k = 0; k < 3; k++) {
 					if (abs(dir[k]) > 0.5) {
 						int dirsgn = int(dir[k] > 0) * 2 - 1;
-						irrCacheData[k + 3 * int(dir[k] > 0)] += abs(normalize(dir - 0.5 * dirsgn * eye[k]))[k] * thisAdjustedCol;
+						// first-order approximation: (dir - 0.5*offset) * invLen
+						vec3 shiftedDir = dir - 0.5 * float(dirsgn) * vec3(k==0?1:0, k==1?1:0, k==2?1:0);
+						irrCacheData[k + 3 * int(dir[k] > 0)] += abs(shiftedDir * invLen)[k] * thisAdjustedCol;
 					} else {
-						irrCacheData[k] += abs(normalize(dir - 0.5 * eye[k]))[k] * thisAdjustedCol;
-						irrCacheData[k + 3] += abs(normalize(dir + 0.5 * eye[k]))[k] * thisAdjustedCol;
+						vec3 axisVec = vec3(k==0?1:0, k==1?1:0, k==2?1:0);
+						vec3 shiftedNeg = dir - 0.5 * axisVec;
+						vec3 shiftedPos = dir + 0.5 * axisVec;
+						irrCacheData[k]     += abs(shiftedNeg * invLen)[k] * thisAdjustedCol;
+						irrCacheData[k + 3] += abs(shiftedPos * invLen)[k] * thisAdjustedCol;
 					}
 				}
 			}

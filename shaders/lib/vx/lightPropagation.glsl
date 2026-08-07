@@ -20,14 +20,27 @@ int propagates(vxData blockData, inout vec3 colMult) {
 	else if (blockData.full) propval = 0;
 	else if (blockData.cuboid) {
 		propval = 0;
-		for (int k = 1; k < 7; k++) {
-			if ((blockData.lower[(k-1)%3] < 0.02 && k < 4) || (blockData.upper[(k-1)%3] > 0.98 && k >= 4)) {
-				bool seals = true;
-				for (int i = (k+3)%3; i != (k+2)%3; i = (i+1)%3) {
-					if (blockData.lower[i] > 0.02 || blockData.upper[i] < 0.98) seals = false;
-				}
-				if (!seals) propval += 1<<(k-1);
-			} else propval += 1<<(k-1);
+		// Explicit 6-face enumeration: lower face (bit 0-2) then upper face (bit 3-5).
+		// axis: 0=X, 1=Y, 2=Z. side: 0=lower, 1=upper.
+		// Bit k is set if face k is open (light can pass through).
+		// Replaces the original modulo-arithmetic loop which was hard to verify. (#13)
+		for (int k = 0; k < 6; k++) {
+			int axis = k % 3;
+			bool isUpper = (k >= 3);
+			float bound = isUpper ? blockData.upper[axis] : blockData.lower[axis];
+			bool faceTouching = isUpper ? (bound > 0.98) : (bound < 0.02);
+			if (!faceTouching) {
+				// Face doesn't reach the block boundary — light passes freely through it
+				propval += (1 << k);
+				continue;
+			}
+			// Face touches boundary: check the two perpendicular axes seal the face
+			bool seals = true;
+			int a1 = (axis + 1) % 3;
+			int a2 = (axis + 2) % 3;
+			if (blockData.lower[a1] > 0.02 || blockData.upper[a1] < 0.98) seals = false;
+			if (blockData.lower[a2] > 0.02 || blockData.upper[a2] < 0.98) seals = false;
+			if (!seals) propval += (1 << k);
 		}
 	} else propval = 127;
 	return propval;

@@ -47,16 +47,18 @@ struct tri_t {
 	vec3 readIrradianceCache(vec3 vxPos, vec3 normal) {
 		vec3 color = vec3(0);
 		vec3 coord = vxPos / (POINTER_VOLUME_RES * pointerGridSize) + 0.5;
+		// Divide by 7 to address the 7 directional slices stacked in Y.
+		// The base coord.y lands on the first slice; add (slice + 0.5)/7 to centre on each texel. (#18)
 		coord.y /= 7.0;
 		for (int i = 0; i < 3; i++) {
-			color += normal[i] * normal[i] * textureLod(irradianceCache, coord + vec3(0, (i + 3 * float(normal[i] > 0)) / 7.0, 0), 0.0).xyz;
+			color += normal[i] * normal[i] * textureLod(irradianceCache, coord + vec3(0, (float(i) + 3.0 * float(normal[i] > 0) + 0.5) / 7.0, 0), 0.0).xyz;
 		}
 		return color;
 	}
 	vec3 readIrradianceCache(vec3 vxPos, int index) {
 		vec3 coord = vxPos / (POINTER_VOLUME_RES * pointerGridSize) + 0.5;
 		coord.y /= 7.0;
-		return textureLod(irradianceCache, coord + vec3(0, index / 7.0, 0), 0.0).xyz;
+		return textureLod(irradianceCache, coord + vec3(0, (float(index) + 0.5) / 7.0, 0), 0.0).xyz;
 	}
 #else
 layout(rgba16f) uniform image3D irradianceCacheI;

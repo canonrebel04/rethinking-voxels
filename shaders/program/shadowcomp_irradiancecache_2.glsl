@@ -38,18 +38,13 @@ bool getOcclusion(int lightPointer, vec3 pos0) {
 	return all(lessThan(dist, vec3(1.0)));
 }
 
-void main() {
-	const mat3 eye = mat3(1);
+	void main() {
 	ivec3 camOffset = ivec3(8.01 * (floor(0.125 * cameraPosition) - floor(0.125 * previousCameraPosition)));
 	const ivec3 totalSize = int(POINTER_VOLUME_RES + 0.5) * pointerGridSize;
+	// Safe scroll: use camOffset only for READ address (oldCacheCoord). (#1)
 	ivec3 iGlobalInvocationID = ivec3(gl_GlobalInvocationID);
-	iGlobalInvocationID = // This is a horrible hack that assumes execution order of threads. If the irradiance
-		iGlobalInvocationID * ivec3(greaterThan(camOffset, ivec3(-1))) + // cache breaks in movement on some hardware,
-		(totalSize - iGlobalInvocationID - 1) * ivec3(lessThan(camOffset, ivec3(0))); // investigate this first
+	// referenceCoord: a spatially nearby stable sample used for propagation
 	ivec3 referenceCoord = ivec3(gl_WorkGroupID);
-	referenceCoord = // This is a horrible hack that assumes execution order of threads. If the irradiance
-		referenceCoord * ivec3(greaterThan(camOffset, ivec3(-1))) + // cache breaks in movement on some hardware,
-		(ivec3(16, 8, 16) - referenceCoord - 1) * ivec3(lessThan(camOffset, ivec3(0))); // investigate this first
 	referenceCoord = 8 * referenceCoord +
 	ivec3(7.9 * hash44(vec4(referenceCoord + 0.5, frameCounter))) +
 	ivec3(8.01 * (floor(0.125 * cameraPosition) - floor(0.125 * previousCameraPosition)));

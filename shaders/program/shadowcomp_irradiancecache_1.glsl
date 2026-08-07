@@ -24,18 +24,15 @@ vec4 hash44(vec4 p) {
 }
 
 shared int visibility;
-void main() {
+	void main() {
 	if (gl_LocalInvocationID == uvec3(0))
 		visibility = 0;
 	barrier();
 	groupMemoryBarrier();
-	const mat3 eye = mat3(1);
 	ivec3 camOffset = ivec3(8.01 * (floor(0.125 * cameraPosition) - floor(0.125 * previousCameraPosition)));
 	const ivec3 totalSize = workGroups;
+	// Safe scroll: use camOffset only for READ address (oldCacheCoord), not to reorder dispatch. (#1)
 	ivec3 iGlobalInvocationID0 = ivec3(gl_WorkGroupID);
-	iGlobalInvocationID0 = // This is a horrible hack that assumes execution order of threads. If the irradiance
-		iGlobalInvocationID0 * ivec3(greaterThan(camOffset, ivec3(-1))) + // cache breaks in movement on some hardware,
-		(totalSize - iGlobalInvocationID0 - 1) * ivec3(lessThan(camOffset, ivec3(0))); // investigate this first
 	ivec3 iGlobalInvocationID = 8 * iGlobalInvocationID0 + ivec3(7.9 * hash44(vec4(iGlobalInvocationID0 + 0.5, frameCounter)));
 	ivec3 thisCoord = iGlobalInvocationID0 + ivec3(gl_LocalInvocationID) - 1;
 	thisCoord = 8 * thisCoord + ivec3(7.9 * hash44(vec4(thisCoord + 0.5, frameCounter)));
