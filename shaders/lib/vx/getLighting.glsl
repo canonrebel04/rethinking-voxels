@@ -29,4 +29,16 @@
 	vec3 getBlockLight(vec3 vxPos) {
 		return getBlockLight(vxPos, vec3(0), 0, false);
 	}
+
+	// Quarter-res cache sampler used by composite3 (formerly composite_lighting).
+	// Always reads the 3D irradiance cache directly, independent of the
+	// PER_BLOCK_LIGHT / colortex12 feedback path. (#20)
+	#ifdef NEW_BLOCKLIGHT_ONLY
+		vec3 newGetBlockLight(vec3 vxPos, vec3 normal, int mat) {
+			if (length(normal) > 0.01)
+				return readIrradianceCache(vxPos + 0.5 * normal, normal);
+			else
+				return readIrradianceCache(vxPos, 6);
+		}
+	#endif
 #endif

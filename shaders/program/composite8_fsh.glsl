@@ -49,6 +49,7 @@ void main() {
 	vec4 prevCol = texture2D(colortex12, prevPos.xy);
 	// Temporal accumulation — guarded by BLOCKLIGHT_TAA toggle. (#11)
 	#ifdef BLOCKLIGHT_TAA
+		float blendFactor = 1.0; // target blend; curve below caps it at 0.92
 		float prevDepth0 = GetLinearDepth(prevPos.z);
 		float prevDepth1 = GetLinearDepth(texture2D(colortex12, prevPos.xy).a);
 		float ddepth = abs(prevDepth0 - prevDepth1) / max(abs(prevDepth0), 0.001);

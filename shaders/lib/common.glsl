@@ -36,6 +36,13 @@
             #define IRRADIANCECACHE
         #endif
     #endif
+    // Quarter-res block-light path (composite3/8: cache sampling + TAA + FSR1).
+    // Active only with ADVANCED_LIGHT_TRACING; gates the gbuffer prev-frame
+    // uniforms and the composite_lighting/accum pass bodies. Restored 2026-08
+    // (was undefined since f67f463, leaving the passes inert).
+    #if ADVANCED_LIGHT_TRACING == 1
+        #define BL_SHADOW_MODE 1
+    #endif
     #define GI_STRENGTH 3 //[0 1 2 3 4 5 10]
     #if GI_STRENGTH != 0
         //#define GI
