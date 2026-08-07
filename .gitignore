@@ -1,5 +1,7 @@
 *.zip
 *.tmp
+.codegraph/
+.hermes/
 *_newdefaults*
 *light*.txt
 *~
