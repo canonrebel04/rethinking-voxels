@@ -5,3 +5,6 @@
 ## 2024-05-18 - Missing UI Screen Accessibility
 **Learning:** Orphaned UI screens (defined in `.lang` and mapping tree but not referenced in any parent screen) create completely inaccessible settings for users in shaderpack option menus.
 **Action:** Always cross-reference `screen.NAME=` definitions with their usage inside other `screen=` mappings to find and restore missing settings menus.
+## 2024-08-07 - Exposing orphaned UI settings
+**Learning:** In Minecraft shaderpacks, UI settings can often be orphaned. The variables are defined and mapped with user-friendly names in `.lang` files, but missing from the actual `screen` layout property trees in `shaders.properties`, making them inaccessible to the end user. Cross-referencing missing `.lang` entries against `shaders.properties` is an effective micro-UX improvement to clean up menus and expose previously inaccessible settings.
+**Action:** Use programmatic checks (e.g., cross-referencing lang option keys without `.comment` suffixes against property screens) to identify and restore these orphaned variables to the correct screen UI layouts, replacing `<empty>` placeholders where possible.
