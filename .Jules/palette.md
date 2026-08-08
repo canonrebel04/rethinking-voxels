@@ -5,3 +5,6 @@
 ## 2024-05-18 - Missing UI Screen Accessibility
 **Learning:** Orphaned UI screens (defined in `.lang` and mapping tree but not referenced in any parent screen) create completely inaccessible settings for users in shaderpack option menus.
 **Action:** Always cross-reference `screen.NAME=` definitions with their usage inside other `screen=` mappings to find and restore missing settings menus.
+## 2024-05-18 - Missing UI Screen Accessibility
+**Learning:** In Minecraft shader packs, options defined in `.lang` files that are not mapped in the `screen.NAME=` tree inside `shaders.properties` become inaccessible to users in the UI.
+**Action:** When adding new settings or auditing UI accessibility, cross-reference `.lang` definitions with `screen=` mappings to find and expose missing settings by overwriting `<empty>` spacers.
