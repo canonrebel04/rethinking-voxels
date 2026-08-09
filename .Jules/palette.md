@@ -5,3 +5,6 @@
 ## 2024-05-18 - Missing UI Screen Accessibility
 **Learning:** Orphaned UI screens (defined in `.lang` and mapping tree but not referenced in any parent screen) create completely inaccessible settings for users in shaderpack option menus.
 **Action:** Always cross-reference `screen.NAME=` definitions with their usage inside other `screen=` mappings to find and restore missing settings menus.
+## 2026-08-09 - Expose orphaned UI settings
+**Learning:** In Minecraft shaderpacks (like Rethinking Voxels), comparing .lang translation keys to shaders.properties screen definitions can reveal orphaned settings that exist as variables (and sliders) but are inaccessible in the UI.
+**Action:** Programmatically diff shaders.properties sliders against screen definitions to find missing UI options, then map them into an appropriate screen.menu to make them accessible.

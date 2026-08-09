@@ -996,3 +996,9 @@ option.TRANSLUCENT_LIGHT_CONDUCTION.comment=Controls how much light passes throu
 
 option.VOLUMETRIC_BLOCKLIGHT=Volumetric Blocklight
 option.VOLUMETRIC_BLOCKLIGHT.comment=Enables volumetric lighting for block lights, creating light shafts or mist that scatter the light.
+
+option.BLOCKLIGHT_STRENGTH=Blocklight Strength
+option.BLOCKLIGHT_STRENGTH.comment=Adjusts the brightness of block light sources.
+
+option.TRANSLUCENT_LIGHT_TINT=Translucent Light Tint
+option.TRANSLUCENT_LIGHT_TINT.comment=Adjusts how strongly translucent blocks tint the light passing through them.
