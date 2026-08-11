@@ -5,3 +5,6 @@
 ## 2024-05-18 - Missing UI Screen Accessibility
 **Learning:** Orphaned UI screens (defined in `.lang` and mapping tree but not referenced in any parent screen) create completely inaccessible settings for users in shaderpack option menus.
 **Action:** Always cross-reference `screen.NAME=` definitions with their usage inside other `screen=` mappings to find and restore missing settings menus.
+## 2024-08-11 - Expose Missing Settings
+**Learning:** Missing or inaccessible UI settings can be identified by cross-referencing `.lang` localization entries against the UI hierarchy in `shaders.properties`. Orphaned `.lang` strings often indicate a setting that needs to be added to the property tree (e.g., exposing a slider by adding a missing `screen` mapping) to be accessible to users.
+**Action:** Programmatically parse and compare `.lang` and `shaders.properties` to find and expose missing settings in the UI.
