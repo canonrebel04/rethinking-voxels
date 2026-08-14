@@ -194,6 +194,9 @@ option.BLOCKLIGHT_SOURCE_SIZE.comment=Controls softness of shadows cast by block
 option.CORRECT_CUBOID_OFFSETS=Cuboid-aware Shadow Softness
 option.CORRECT_CUBOID_OFFSETS.comment=If enabled, shadows cast by cuboid shaped light sources will have correct directional softness.
 
+option.BLOCKLIGHT_STRENGTH=Blocklight Strength
+option.BLOCKLIGHT_STRENGTH.comment=Adjusts the overall brightness of block lights.
+
 option.BLOCKLIGHT_SHAFT_STRENGTH=Volumetric Blocklight Strength
 option.BLOCKLIGHT_SHAFT_STRENGTH.comment=Brightness of blocklight contribution to volumetric fog.
 
@@ -993,6 +996,9 @@ option.OCCLUSION_CASCADE_COUNT.comment=Determines the number of occlusion cascad
 
 option.TRANSLUCENT_LIGHT_CONDUCTION=Translucent Light Conduction
 option.TRANSLUCENT_LIGHT_CONDUCTION.comment=Controls how much light passes through translucent blocks like water, glass, or stained glass.
+
+option.TRANSLUCENT_LIGHT_TINT=Translucent Light Tint
+option.TRANSLUCENT_LIGHT_TINT.comment=Adjusts the amount of color tint applied to light passing through translucent blocks.
 
 option.VOLUMETRIC_BLOCKLIGHT=Volumetric Blocklight
 option.VOLUMETRIC_BLOCKLIGHT.comment=Enables volumetric lighting for block lights, creating light shafts or mist that scatter the light.
