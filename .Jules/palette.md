@@ -5,3 +5,6 @@
 ## 2024-05-18 - Missing UI Screen Accessibility
 **Learning:** Orphaned UI screens (defined in `.lang` and mapping tree but not referenced in any parent screen) create completely inaccessible settings for users in shaderpack option menus.
 **Action:** Always cross-reference `screen.NAME=` definitions with their usage inside other `screen=` mappings to find and restore missing settings menus.
+## 2026-08-25 - Expose Missing Config Options
+**Learning:** In Minecraft shader UI systems based on Optifine properties, variables defined as `sliders` but not mapped to a `screen` are completely hidden from the user, causing configuration fragmentation.
+**Action:** Audit `shaders.properties` for unmapped `sliders` and assign them to logical screens, replacing `<empty>` placeholders to maintain grid alignment.
