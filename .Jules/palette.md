@@ -5,3 +5,6 @@
 ## 2024-05-18 - Missing UI Screen Accessibility
 **Learning:** Orphaned UI screens (defined in `.lang` and mapping tree but not referenced in any parent screen) create completely inaccessible settings for users in shaderpack option menus.
 **Action:** Always cross-reference `screen.NAME=` definitions with their usage inside other `screen=` mappings to find and restore missing settings menus.
+## 2026-08-26 - Exposing hidden settings
+**Learning:** In Minecraft shader configs, active variables in sliders missing from screens limit accessibility. Subsuming <empty> spacers neatly adds settings without breaking grid layout.
+**Action:** Audit shaders.properties sliders for unmapped keys during UI polishes.
