@@ -5,3 +5,6 @@
 ## 2024-05-18 - Missing UI Screen Accessibility
 **Learning:** Orphaned UI screens (defined in `.lang` and mapping tree but not referenced in any parent screen) create completely inaccessible settings for users in shaderpack option menus.
 **Action:** Always cross-reference `screen.NAME=` definitions with their usage inside other `screen=` mappings to find and restore missing settings menus.
+## 2026-08-27 - Expose hidden properties in UI
+**Learning:** Found valid slider configurations (BLOCKLIGHT_STRENGTH, TRANSLUCENT_LIGHT_TINT) completely omitted from `shaders.properties` screens, limiting user control over advanced lighting settings.
+**Action:** Programmatically parse `shaders.properties` options and screen lists, filtering out `<empty>` markers, to find and expose valid hidden toggles in appropriate menu categories, replacing blank placeholders for cleaner layouts.
