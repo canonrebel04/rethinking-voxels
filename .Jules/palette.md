@@ -5,3 +5,6 @@
 ## 2024-05-18 - Missing UI Screen Accessibility
 **Learning:** Orphaned UI screens (defined in `.lang` and mapping tree but not referenced in any parent screen) create completely inaccessible settings for users in shaderpack option menus.
 **Action:** Always cross-reference `screen.NAME=` definitions with their usage inside other `screen=` mappings to find and restore missing settings menus.
+## 2026-08-28 - Missing UI Sliders
+**Learning:** In Minecraft shader packs, slider variables defined in the 'sliders=' list and implemented in source '.glsl' files can be left out of any UI 'screen=' mappings, making them inaccessible to users.
+**Action:** Always cross-reference 'sliders=' configurations with 'screen=' mappings to find and expose missing settings by replacing '<empty>' layout placeholders.
