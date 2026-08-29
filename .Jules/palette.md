@@ -5,3 +5,6 @@
 ## 2024-05-18 - Missing UI Screen Accessibility
 **Learning:** Orphaned UI screens (defined in `.lang` and mapping tree but not referenced in any parent screen) create completely inaccessible settings for users in shaderpack option menus.
 **Action:** Always cross-reference `screen.NAME=` definitions with their usage inside other `screen=` mappings to find and restore missing settings menus.
+## 2024-05-18 - Exposing Orphaned UI Settings
+**Learning:** In Minecraft shaderpacks, settings like `shadowDistance` can be fully implemented in GLSL and documented in `.lang` files but hidden from users due to missing screen mapping in `shaders.properties`. Exposing these represents a low-effort, high-impact micro-UX improvement.
+**Action:** Audit `sliders=` and `const` variables against `screen.*=` mappings to find actionable micro-UX enhancements replacing empty layout spaces.
