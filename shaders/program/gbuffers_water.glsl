@@ -244,8 +244,10 @@ void main() {
 	#endif
 
 	// Blending
-	if (!translucentMultCalculated)
-		translucentMult = vec4(mix(vec3(1.0), normalize(pow2(color.rgb)) * pow2(color.rgb), sqrt1(color.a)) * (1.0 - pow(color.a, 64.0)), 1.0);
+	if (!translucentMultCalculated) {
+		vec3 colorP2 = pow2(color.rgb);
+		translucentMult = vec4(mix(vec3(1.0), normalize(colorP2) * colorP2, sqrt1(color.a)) * (1.0 - pow(color.a, 64.0)), 1.0);
+	}
 
 	translucentMult.rgb = mix(translucentMult.rgb, vec3(1.0), min1(pow2(pow2(lViewPos / far))));
 	

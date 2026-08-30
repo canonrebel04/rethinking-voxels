@@ -173,7 +173,8 @@ void main() {
 	#endif
 
 	// Blending
-	vec3 translucentMult = mix(vec3(1.0), normalize(pow2(color.rgb)) * pow2(color.rgb), sqrt1(color.a)) * (1.0 - pow(color.a, 64.0));
+	vec3 colorP2 = pow2(color.rgb);
+	vec3 translucentMult = mix(vec3(1.0), normalize(colorP2) * colorP2, sqrt1(color.a)) * (1.0 - pow(color.a, 64.0));
 	
 	/* DRAWBUFFERS:013 */
 	gl_FragData[0] = color;
