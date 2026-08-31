@@ -5,3 +5,7 @@
 ## 2024-05-18 - Missing UI Screen Accessibility
 **Learning:** Orphaned UI screens (defined in `.lang` and mapping tree but not referenced in any parent screen) create completely inaccessible settings for users in shaderpack option menus.
 **Action:** Always cross-reference `screen.NAME=` definitions with their usage inside other `screen=` mappings to find and restore missing settings menus.
+
+## 2024-05-18 - Missing UI configurations
+**Learning:** When developing shader packs for Minecraft with OptiFine/Iris, if options are missing from the configuration file (`shaders.properties`) inside `screen.*=` assignments, they will not be exposed to the user interface menu, even if they're implemented in code or have valid entries in `.lang` files and are defined as sliders. Unexposed options can be easily fixed by finding their logical section and substituting them for `<empty>` spacer tags.
+**Action:** Expose stranded options and sliders in logical UI sections (e.g. `BLOCKLIGHT_STRENGTH` in `screen.ADV_LIGHTPROP_STUFF`), ensuring to define missing descriptions inside `.lang` files.
