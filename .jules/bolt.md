@@ -1,3 +1,6 @@
 ## 2024-05-18 - Replacing `pow(x, 2)` with `pow2(x)` or `x * x`
 **Learning:** In GLSL, standard `pow(x, y)` function calls where `y` is a constant integer like 2 can be inefficient. For `pow(x, 2)`, it is more performant to use a custom overloaded `pow2(x)` function (which avoids macro double evaluation risks if safely implemented in `common.glsl`) or manually multiply a precalculated local variable by itself (`t * t`). When converting `pow(x, 2)` inside other functions like `max(a, b)`, ensuring floating point precision with literals (`0.0`, `1.0`) is crucial for shader safety and correct types.
 **Action:** Always prefer `pow2(x)` (if in scope) or `x * x` for squaring operations instead of generic `pow(x, 2.0)` to optimize shader performance without sacrificing readability.
+## 2024-05-18 - Avoid double evaluation of expensive math in shader mix functions
+**Learning:** Found instances of `normalize(pow2(color.rgb)) * pow2(color.rgb)` where `pow2()` was evaluated twice. GLSL compilers might not optimize this if it's across function boundaries.
+**Action:** Extract repeated expensive mathematical expressions (like `pow2` operations) into local variables before using them in vector operations or mix functions to guarantee reduced computational overhead.
