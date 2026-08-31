@@ -1,0 +1,3 @@
+## 2024-08-31 - Exposing Orphaned Shader Configurations
+**Learning:** Some shader configurations (`sliders=`) might be defined and implemented in the `.glsl` codebase and have corresponding localization strings, but remain hidden from users because they are missing from the `screen.*` layout definitions in `shaders.properties`. Exposing these in appropriate menus is a strong micro-UX improvement.
+**Action:** When auditing `shaders.properties`, cross-reference the `sliders` list against the `screen.*` assignments to find orphaned settings. Expose them by replacing `<empty>` spacers to maintain grid alignment, provided they have existing `.lang` names and `.glsl` implementations.
