@@ -11,7 +11,11 @@
 flat in int mat;
 
 in vec2 texCoord;
-in vec2 lmCoord;
+#ifdef GBUFFERS_COLORWHEEL_TRANSLUCENT
+    vec2 lmCoord;
+#else
+    in vec2 lmCoord;
+#endif
 in vec2 signMidCoordPos;
 flat in vec2 absMidCoordPos;
 
@@ -28,6 +32,10 @@ in vec4 glColor;
 
 #ifdef POM
     in vec4 vTexCoordAM;
+#endif
+
+#ifdef IRIS_FEATURE_FADE_VARIABLE
+    flat in float chunkFade;
 #endif
 
 //Pipeline Constants//
@@ -67,6 +75,7 @@ float GetLinearDepth(float depth) {
 #include "/lib/util/spaceConversion.glsl"
 #include "/lib/lighting/mainLighting.glsl"
 #include "/lib/atmospherics/fog/mainFog.glsl"
+#include "/lib/materials/materialMethods/translucentTweaks.glsl"
 
 #ifdef OVERWORLD
     #include "/lib/atmospherics/sky.glsl"
@@ -78,13 +87,13 @@ float GetLinearDepth(float depth) {
             #include "/lib/atmospherics/auroraBorealis.glsl"
         #endif
 
-        #ifdef NIGHT_NEBULA
+        #if NIGHT_NEBULAE == 1
             #include "/lib/atmospherics/nightNebula.glsl"
         #else
             #include "/lib/atmospherics/stars.glsl"
         #endif
 
-        #ifdef VL_CLOUDS_ACTIVE 
+        #ifdef VL_CLOUDS_ACTIVE
             #include "/lib/atmospherics/clouds/mainClouds.glsl"
         #endif
     #endif
@@ -124,7 +133,7 @@ float GetLinearDepth(float depth) {
 #endif
 
 #ifdef PORTAL_EDGE_EFFECT
-    #include "/lib/misc/voxelization.glsl"
+    #include "/lib/voxelization/lightVoxelization.glsl"
 #endif
 
 #ifdef CONNECTED_GLASS_EFFECT
@@ -134,7 +143,17 @@ float GetLinearDepth(float depth) {
 //Program//
 void main() {
     vec4 colorP = texture2D(tex, texCoord);
-    vec4 color = colorP * vec4(glColor.rgb, 1.0);
+
+    #ifdef GBUFFERS_COLORWHEEL_TRANSLUCENT
+        float ao;
+        vec4 overlayColor;
+
+        clrwl_computeFragment(colorP, colorP, lmCoord, ao, overlayColor);
+        vec4 color = mix(colorP, overlayColor, overlayColor.a);
+        lmCoord = clamp((lmCoord - 1.0 / 32.0) * 32.0 / 30.0, 0.0, 1.0);
+    #else
+        vec4 color = colorP * vec4(glColor.rgb, 1.0);
+    #endif
 
     vec3 screenPos = vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), gl_FragCoord.z);
     #ifdef TAA
@@ -158,7 +177,7 @@ void main() {
     #endif
 
     #ifdef VL_CLOUDS_ACTIVE
-        float cloudLinearDepth = texelFetch(gaux1, texelCoord, 0).r;
+        float cloudLinearDepth = texelFetch(gaux2, texelCoord, 0).a;
 
         if (pow2(cloudLinearDepth + OSIEBCA * dither) * renderDistance < min(lViewPos, renderDistance)) discard;
     #endif
@@ -174,38 +193,16 @@ void main() {
     vec4 translucentMult = vec4(1.0);
     bool noSmoothLighting = false, noDirectionalShading = false, translucentMultCalculated = false, noGeneratedNormals = false;
     int subsurfaceMode = 0;
-    float smoothnessG = 0.0, highlightMult = 1.0, reflectMult = 0.0, emission = 0.0;
     vec2 lmCoordM = lmCoord;
+    float smoothnessG = 0.0, highlightMult = 1.0, reflectMult = 0.0, emission = 0.0;
     vec3 normalM = VdotN > 0.0 ? -normal : normal; // Inverted Iris Water Normal Workaround
     vec3 geoNormal = normalM;
     vec3 worldGeoNormal = normalize(ViewToPlayer(geoNormal * 10000.0));
     vec3 shadowMult = vec3(1.0);
     float fresnel = clamp(1.0 + dot(normalM, nViewPos), 0.0, 1.0);
-    #ifdef IPBR
-        #include "/lib/materials/materialHandling/translucentMaterials.glsl"
+    float fresnelM = pow3(fresnel);
 
-        #ifdef GENERATED_NORMALS
-            if (!noGeneratedNormals) GenerateNormals(normalM, colorP.rgb * colorP.a * 1.5);
-        #endif
-
-        #if IPBR_EMISSIVE_MODE != 1
-            emission = GetCustomEmissionForIPBR(color, emission);
-        #endif
-    #else
-        #ifdef CUSTOM_PBR
-            float smoothnessD, materialMaskPh;
-            GetCustomMaterials(color, normalM, lmCoordM, NdotU, shadowMult, smoothnessG, smoothnessD, highlightMult, emission, materialMaskPh, viewPos, lViewPos);
-            reflectMult = smoothnessD;
-        #endif
-
-        if (mat == 32000) { // Water
-            #include "/lib/materials/specificMaterials/translucents/water.glsl"
-        } else if (mat == 30020) { // Nether Portal
-            #ifdef SPECIAL_PORTAL_EFFECTS
-                #include "/lib/materials/specificMaterials/translucents/netherPortal.glsl"
-            #endif
-        }
-    #endif
+    #include "/lib/materials/materialHandling/translucentMaterials.glsl"
 
     #if WATER_MAT_QUALITY >= 3 && SELECT_OUTLINE == 4
         int materialMaskInt = int(texelFetch(colortex6, texelCoord, 0).g * 255.1);
@@ -226,6 +223,7 @@ void main() {
                false, subsurfaceMode, smoothnessG, materialMask, highlightMult, emission);
 
     // Reflections
+    float skyLightFactor = GetSkyLightFactor(lmCoordM, shadowMult);
     #if WATER_REFLECT_QUALITY >= 0
         #ifdef LIGHT_COLOR_MULTS
             highlightColor *= lightColorMult;
@@ -234,18 +232,16 @@ void main() {
             highlightColor *= pow2(moonPhaseInfluence);
         #endif
 
-        float fresnelM = (pow3(fresnel) * 0.85 + 0.15) * reflectMult;
-
-        float skyLightFactor = pow2(max(lmCoordM.y - 0.7, 0.0) * 3.33333);
-        #if SHADOW_QUALITY > -1 && WATER_REFLECT_QUALITY >= 2 && WATER_MAT_QUALITY >= 2
-            skyLightFactor = max(skyLightFactor, min1(dot(shadowMult, shadowMult)));
-        #endif
+        fresnelM = (fresnelM * 0.85 + 0.15) * reflectMult;
 
         vec4 reflection = GetReflection(normalM, viewPos.xyz, nViewPos, playerPos, lViewPos, -1.0,
                                         depthtex1, dither, skyLightFactor, fresnel,
                                         smoothnessG, geoNormal, color.rgb, shadowMult, highlightMult);
-
         color.rgb = mix(color.rgb, reflection.rgb, fresnelM);
+
+    #else
+        fresnelM = 0.0;
+        vec4 reflection = vec4(0.0);
     #endif
     ////
 
@@ -253,18 +249,41 @@ void main() {
         ColorCodeProgram(color, mat);
     #endif
 
-    float sky = 0.0;
-    DoFog(color.rgb, sky, lViewPos, playerPos, VdotU, VdotS, dither);
-    color.a *= 1.0 - sky;
+    float skyFade = 0.0;
+    float prevAlpha = color.a;
+    color.a = 1.0;
+    DoFog(color, skyFade, lViewPos, playerPos, VdotU, VdotS, dither, false, 0.0);
+    float fogAlpha = color.a;
+    color.a = prevAlpha * (1.0 - skyFade);
+
+    #ifdef IRIS_FEATURE_FADE_VARIABLE
+        skyLightFactor *= 0.5;
+    #endif
+
+    #ifdef DH_BLENDING
+        float fog = max(length(playerPos.xz), abs(playerPos.y)) / far;
+        fog = pow2(pow2(pow2(pow2(fog))));
+        fog = exp(-3.0 * fog);
+        color.a *= fog;
+    #endif
 
     /* DRAWBUFFERS:03 */
     gl_FragData[0] = color;
     gl_FragData[1] = vec4(1.0 - translucentMult.rgb, translucentMult.a);
 
-    // supposed to be #if WATER_MAT_QUALITY >= 3 but optifine bad
-    #if DETAIL_QUALITY >= 3
+    #if DETAIL_QUALITY >= 3 || (WATER_REFLECT_QUALITY > 0 && WORLD_SPACE_REFLECTIONS > 0)
         /* DRAWBUFFERS:036 */
-        gl_FragData[2] = vec4(0.0, materialMask, 0.0, 1.0);
+        gl_FragData[2] = vec4(1.0, materialMask, skyLightFactor, 1.0);
+
+        #if WORLD_SPACE_REFLECTIONS > 0
+            /* DRAWBUFFERS:03648 */
+            gl_FragData[3] = vec4(mat3(gbufferModelViewInverse) * normalM, sqrt(fresnelM * color.a * fogAlpha));
+            gl_FragData[4] = vec4(reflection.rgb * fresnelM * color.a * fogAlpha, reflection.a);
+        #endif
+    #elif WORLD_SPACE_REFLECTIONS > 0
+        /* DRAWBUFFERS:0348 */
+        gl_FragData[2] = vec4(mat3(gbufferModelViewInverse) * normalM, sqrt(fresnelM * color.a * fogAlpha));
+        gl_FragData[3] = vec4(reflection.rgb * fresnelM * color.a * fogAlpha, reflection.a);
     #endif
 }
 
@@ -276,7 +295,11 @@ void main() {
 flat out int mat;
 
 out vec2 texCoord;
-out vec2 lmCoord;
+#ifdef GBUFFERS_COLORWHEEL_TRANSLUCENT
+    vec2 lmCoord;
+#else
+    out vec2 lmCoord;
+#endif
 out vec2 signMidCoordPos;
 flat out vec2 absMidCoordPos;
 
@@ -293,6 +316,10 @@ out vec4 glColor;
 
 #ifdef POM
     out vec4 vTexCoordAM;
+#endif
+
+#ifdef IRIS_FEATURE_FADE_VARIABLE
+    flat out float chunkFade;
 #endif
 
 //Attributes//
@@ -333,8 +360,10 @@ void main() {
     northVec = normalize(gbufferModelView[2].xyz);
     sunVec = GetSunVector();
 
-    binormal = normalize(gl_NormalMatrix * cross(at_tangent.xyz, gl_Normal.xyz) * at_tangent.w);
-    tangent  = normalize(gl_NormalMatrix * at_tangent.xyz);
+    vec3 rawBinormal = gl_NormalMatrix * cross(at_tangent.xyz, gl_Normal.xyz) * at_tangent.w;
+    binormal = rawBinormal * inversesqrt(max(dot(rawBinormal, rawBinormal), 1e-8));
+    vec3 rawTangent = gl_NormalMatrix * at_tangent.xyz;
+    tangent = rawTangent * inversesqrt(max(dot(rawTangent, rawTangent), 1e-8));
 
     mat3 tbnMatrix = mat3(
         tangent.x, binormal.x, normal.x,
@@ -366,6 +395,14 @@ void main() {
 
     #ifdef TAA
         gl_Position.xy = TAAJitter(gl_Position.xy, gl_Position.w);
+    #endif
+
+    #ifdef IRIS_FEATURE_FADE_VARIABLE
+        chunkFade = mc_chunkFade;
+    #endif
+
+    #if MC_VERSION >= 260100
+        if (mat == 10049) mat = 32001; // Cauldron Water
     #endif
 }
 
