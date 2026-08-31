@@ -2,4 +2,4 @@
 
 - If you don't know how to install the pack, please go to this link and read the "Installation" section
 
-- https://modrinth.com/shader/complementary-reimagined
+- https://github.com/canonrebel04/rethinking-voxels (this fork targets MC 26.2; requires Iris 1.11.2+, Sodium mc26.2-0.9.0)
