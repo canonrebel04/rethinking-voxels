@@ -73,7 +73,7 @@ mat4 gbufferProjectionInverse = dhProjectionInverse;
             #include "/lib/atmospherics/auroraBorealis.glsl"
         #endif
 
-        #ifdef NIGHT_NEBULA
+        #if NIGHT_NEBULAE == 1
             #include "/lib/atmospherics/nightNebula.glsl"
         #else
             #include "/lib/atmospherics/stars.glsl"
@@ -100,7 +100,7 @@ void main() {
     vec4 color = glColor;
 
     vec3 screenPos = vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), gl_FragCoord.z);
-    if (texture2D(depthtex1, screenPos.xy).r < 1.0) discard;
+    if (texture2D(depthtex0, screenPos.xy).r < 1.0) discard;
     float lViewPos = length(playerPos);
 
     float dither = Bayer64(gl_FragCoord.xy);
@@ -114,7 +114,7 @@ void main() {
     #endif
 
     #ifdef VL_CLOUDS_ACTIVE
-        float cloudLinearDepth = texelFetch(gaux1, texelCoord, 0).r;
+        float cloudLinearDepth = texelFetch(gaux2, texelCoord, 0).a;
 
         if (pow2(cloudLinearDepth + OSIEBCA * dither) * renderDistance < min(lViewPos, renderDistance)) discard;
     #endif
@@ -138,9 +138,11 @@ void main() {
     if (mat == DH_BLOCK_WATER) {
         #include "/lib/materials/specificMaterials/translucents/water.glsl"
     }
+    
+    float fresnelM = (pow3(fresnel) * 0.85 + 0.15) * reflectMult;
 
     float lengthCylinder = max(length(playerPos.xz), abs(playerPos.y) * 2.0);
-    color.a *= smoothstep(far * 0.5, far * 0.7, lengthCylinder);
+    color.a *= smoothstep(far * 0.4, far * 0.6, lengthCylinder);
 
     DoLighting(color, shadowMult, playerPos, viewPos, lViewPos, geoNormal, normalM, 0.5,
                worldGeoNormal, lmCoordM, noSmoothLighting, noDirectionalShading, noVanillaAO,
@@ -155,24 +157,22 @@ void main() {
             highlightColor *= pow2(moonPhaseInfluence);
         #endif
 
-        float fresnelM = (pow3(fresnel) * 0.85 + 0.15) * reflectMult;
-
-        float skyLightFactor = pow2(max(lmCoordM.y - 0.7, 0.0) * 3.33333);
-        #if SHADOW_QUALITY > -1 && WATER_REFLECT_QUALITY >= 2 && WATER_MAT_QUALITY >= 2
-            skyLightFactor = max(skyLightFactor, min1(dot(shadowMult, shadowMult)));
-        #endif
+        float skyLightFactor = GetSkyLightFactor(lmCoordM, shadowMult);
 
         vec4 reflection = GetReflection(normalM, viewPos.xyz, nViewPos, playerPos, lViewPos, -1.0,
-                                        depthtex1, dither, skyLightFactor, fresnel,
+                                        dhDepthTex, dither, skyLightFactor, fresnel,
                                         smoothnessG, geoNormal, color.rgb, shadowMult, highlightMult);
 
         color.rgb = mix(color.rgb, reflection.rgb, fresnelM);
     #endif
-    ////
+    //
 
     float sky = 0.0;
-    DoFog(color.rgb, sky, lViewPos, playerPos, VdotU, VdotS, dither);
-    color.a *= 1.0 - sky;
+
+    float prevAlpha = color.a;
+    DoFog(color, sky, lViewPos, playerPos, VdotU, VdotS, dither, false, 0.0);
+    float fogAlpha = color.a;
+    color.a = prevAlpha * (1.0 - sky);
 
     /* DRAWBUFFERS:0 */
     gl_FragData[0] = color;
@@ -208,7 +208,9 @@ attribute vec4 at_tangent;
 
 //Program//
 void main() {
-    gl_Position = ftransform();
+    vec4 position = gbufferModelViewInverse * gl_ModelViewMatrix * gl_Vertex;
+
+    gl_Position = dhProjection * gbufferModelView * position;
     #ifdef TAA
         gl_Position.xy = TAAJitter(gl_Position.xy, gl_Position.w);
     #endif
@@ -223,7 +225,7 @@ void main() {
     northVec = normalize(gbufferModelView[2].xyz);
     sunVec = GetSunVector();
 
-    playerPos = (gbufferModelViewInverse * gl_ModelViewMatrix * gl_Vertex).xyz;
+    playerPos = position.xyz;
 
     mat3 tbnMatrix = mat3(
         eastVec.x, northVec.x, normal.x,

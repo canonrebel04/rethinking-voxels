@@ -20,7 +20,7 @@ float GetLinearDepth(float depth) {
 }
 
 //Includes//
-#if FXAA_DEFINE == 1
+#if FXAA_DEFINE == 1 && FXAA_STRENGTH > 1
     #include "/lib/antialiasing/fxaa.glsl"
 #endif
 
@@ -33,7 +33,7 @@ vec3 fractCamPos = cameraPositionInt.y == -98257195 ? fract(cameraPosition) : ca
 void main() {
     vec3 color = texelFetch(colortex3, texelCoord, 0).rgb;
         
-    #if FXAA_DEFINE == 1
+    #if FXAA_DEFINE == 1 && FXAA_STRENGTH > 1
         FXAA311(color);
     #endif
 /*

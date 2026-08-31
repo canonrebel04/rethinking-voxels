@@ -133,15 +133,15 @@ void main() {
                         sunMoonMixer *= 1.0 - 0.65 * GetCaveFactor();
                     #endif
 
-                    color.rgb = mix(color.rgb, vec3(0.9, 0.5, 0.3) * 10.0, sunMoonMixer);
+                    color.rgb = mix(color.rgb, vec3(0.9, 0.5, 0.3) * 25.0, sunMoonMixer);
                 } else {
                     float horizonFactor = GetHorizonFactor(-SdotU);
                     sunMoonMixer = max0(sunMoonMixer - 0.25) * 1.33333 * horizonFactor;
 
                     starCoord = GetStarCoord(viewPos.xyz, 1.0) * 0.5 + 0.617;
-                    float moonNoise = texture2D(noisetex, starCoord).g
-                                    + texture2D(noisetex, starCoord * 2.5).g * 0.7
-                                    + texture2D(noisetex, starCoord * 5.0).g * 0.5;
+                    float moonNoise = texture2DLod(noisetex, starCoord, 0.0).g
+                                    + texture2DLod(noisetex, starCoord * 2.5, 0.0).g * 0.7
+                                    + texture2DLod(noisetex, starCoord * 5.0, 0.0).g * 0.5;
                     moonNoise = max0(moonNoise - 0.75) * 1.7;
                     vec3 moonColor = vec3(0.38, 0.4, 0.5) * (1.2 - (0.2 + 0.2 * sqrt1(nightFactor)) * moonNoise);
 
@@ -216,8 +216,12 @@ void main() {
     sunVec = GetSunVector();
 
     #ifdef OVERWORLD
-        //Vanilla Star Dedection by Builderb0y
-        vanillaStars = float(glColor.r == glColor.g && glColor.g == glColor.b && glColor.r > 0.0 && glColor.r < 0.51);
+        #if MC_VERSION >= 11605 && (defined IS_ANGELICA || defined IS_IRIS)
+            vanillaStars = float(renderStage == MC_RENDER_STAGE_STARS);
+        #else
+            //Vanilla Star Dedection by Builderb0y
+            vanillaStars = float(glColor.r == glColor.g && glColor.g == glColor.b && glColor.r > 0.0 && glColor.r < 0.51);
+        #endif
     #endif
 }
 
