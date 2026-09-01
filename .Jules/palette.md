@@ -1,0 +1,3 @@
+## 2024-05-18 - Exposing Missing Shader Options
+**Learning:** By cross-referencing `#define` sliders and screen mappings in `shaders.properties`, we can identify orphaned features. Missing settings like volumetric blocklight strength can be elegantly integrated into existing nested screen menus by substituting empty layout spacers without disrupting the UX grid.
+**Action:** When auditing shader settings for UX parity, always check the `sliders=` array and `.glsl` source definitions to find features that lack a `screen.*` UI assignment, then map them to the relevant context menus replacing `<empty>` spacers.
