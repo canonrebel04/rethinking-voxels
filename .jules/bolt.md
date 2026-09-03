@@ -1,0 +1,3 @@
+## $(date +%Y-%m-%d) - Optimize pow() calls with native pow2() in GLSL
+**Learning:** I noticed that some GLSL code uses `pow(x, 2.0)` instead of `pow2(x)`. GLSL's `pow()` is typically implemented as `exp2(y * log2(x))` which is significantly more expensive than a simple multiplication `x * x`. In this codebase, there is a `pow2` function available in `common.glsl` (and frequently included), which is just `x * x`. Optimizing `pow(x, 2.0)` to `pow2(x)` is a quick and effective performance win for GLSL shaders.
+**Action:** Always replace `pow(x, 2.0)` with `pow2(x)` when squaring numbers in GLSL for better performance, ensuring `common.glsl` is accessible or implementing inline multiplication if it isn't.
