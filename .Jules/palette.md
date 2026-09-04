@@ -1,0 +1,1 @@
+## 2026-09-04 - Found Orphaned Sliders\n**Learning:** Found that `VBL_STRENGTH` and `BLOCKLIGHT_I` are implemented in the shader pack but missing from the UI configuration screens in `shaders.properties`.\n**Action:** Add them to the appropriate configuration screens replacing `<empty>` spacers.
