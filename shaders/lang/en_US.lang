@@ -1526,3 +1526,4 @@ option.DEBRIS_COL_B=Blue
 option.RESIN_COL_R=Red
 option.RESIN_COL_G=Green
 option.RESIN_COL_B=Blue
+option.BLOCKLIGHT_I=Blocklight Intensity
