@@ -1213,6 +1213,7 @@ value.R2_FALLOFF.1=1/r^2
 
 option.VOLUMETRIC_BLOCKLIGHT=Vol. Blocklight
 option.VBL_STRENGTH=Vol. Blocklight Strength
+option.VBL_STRENGTH.comment=Controls the intensity of volumetric blocklight.
 option.VBL_NETHER_MULT=Vol. Blocklight Nether Multiplier
 option.VBL_END_MULT=Vol. Blocklight End Multiplier
 
