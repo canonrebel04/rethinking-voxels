@@ -1,0 +1,3 @@
+## 2024-09-06 - Optimizing GGX Denominators
+**Learning:** In hot shader functions like GGX (run per pixel), combining multiple divisions (e.g., `D = X / Y; specular = D / Z`) into one (`specular = X / (Y * Z)`) saves expensive division operations. Furthermore, math identities like `pow2(A) * pow2(B) = pow2(A * B)` eliminate redundant multiplications. Finally, replacing division by a constant (like PI) with multiplication by its inverse (`* 0.3183098861837907`) is a classic micro-optimization.
+**Action:** Always inspect mathematical formulas in shaders to group divisions and extract common subexpressions.
