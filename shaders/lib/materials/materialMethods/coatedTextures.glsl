@@ -8,10 +8,12 @@ void CoatTextures(inout vec3 color, float noiseFactor, vec3 playerPos, bool doTi
     #endif
 
     #ifndef SAFER_GENERATED_NORMALS
-        vec2 noiseCoord = floor(midCoordPos / 16.0 * packSizeNT * atlasSizeM) / packSizeNT / 3.0;
+        // Bolt: Optimized sequential division (A / B) / C -> A / (B * C)
+        vec2 noiseCoord = floor(midCoordPos / 16.0 * packSizeNT * atlasSizeM) / (packSizeNT * 3.0);
     #else
         vec2 offsetR = max(absMidCoordPos.x, absMidCoordPos.y) * vec2(float(atlasSizeM.y) / float(atlasSizeM.x), 1.0);
-        vec2 noiseCoord = floor(midCoordPos / 2.0 * packSizeNT / offsetR) / packSizeNT / 3.0;
+        // Bolt: Optimized sequential division
+        vec2 noiseCoord = floor(midCoordPos / 2.0 * packSizeNT / offsetR) / (packSizeNT * 3.0);
     #endif
 
     if (doTileRandomisation) {
