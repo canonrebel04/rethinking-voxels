@@ -76,7 +76,8 @@ vec4 getShadedReflection(ivec3 voxelPos, vec3 oldPlayerPos, vec3 playerPos, vec3
 
     float virtualDist   = length(playerPos - oldPlayerPos) + length(oldPlayerPos);
     float textureFactor = length(textureRadVec2 * textureSizeAtlas) * 3.0;
-    float lod = 0.5 * log2(virtualDist * textureFactor / gbufferProjection[0][0] / abs(dot(normal, rayDir)) / viewHeight / REFLECTION_RES);
+    // Bolt: Optimized sequential divisions A / B / C -> A / (B * C)
+    float lod = 0.5 * log2(virtualDist * textureFactor / (gbufferProjection[0][0] * abs(dot(normal, rayDir)) * viewHeight * REFLECTION_RES));
 
     vec4 color = texture2DLod(textureAtlas, textureCoord, lod) * vec4(faceData.glColor, 1.0);
 
