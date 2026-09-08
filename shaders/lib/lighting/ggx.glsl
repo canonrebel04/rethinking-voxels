@@ -48,7 +48,6 @@ float GGX(vec3 normalM, vec3 viewPos, vec3 lightVec, float NdotLmax0, float smoo
     #endif
 
     float denom = dotNH * roughness - dotNH + 1.0;
-    float D = roughness / (3.141592653589793 * pow2(denom));
     float f0 = 0.05;
     float F = exp2((-5.55473 * dotLH - 6.98316) * dotLH) * (1.0 - f0) + f0;
     #ifndef CSH
@@ -56,7 +55,8 @@ float GGX(vec3 normalM, vec3 viewPos, vec3 lightVec, float NdotLmax0, float smoo
     #else
         float NdotLmax0M = NdotLmax0;
     #endif
-    float specular = max0(NdotLmax0M * D * F / pow2(dotLH));
+    // Bolt: Optimized sequential divisions A / B / C -> A / (B * C) and consolidated power functions pow2(A) * pow2(B) -> pow2(A * B)
+    float specular = max0(NdotLmax0M * roughness * F * 0.3183098861837907 / pow2(denom * dotLH));
     specular = specular / (0.125 * specular + 1.0);
 
     return specular;
