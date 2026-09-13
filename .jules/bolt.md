@@ -1,0 +1,3 @@
+## 2024-09-13 - Replace division by constant with multiplication in Bloom filter
+**Learning:** Found divisions by a constant (e.g., `/ 4096.0` and `/ 128.0`) in the Bloom tile calculation (`shaders/program/composite4.glsl`). In GPU shader languages (like GLSL), division is computationally more expensive than multiplication.
+**Action:** Replaced division by a constant with multiplication by its reciprocal (e.g., replacing `/ 4096.0` with `* 0.000244140625` and `/ 128.0` with `* 0.0078125`) to eliminate expensive floating-point division operations and mathematically simplify sequential operations in hot paths.
