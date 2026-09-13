@@ -43,10 +43,10 @@ vec3 BloomTile(float lod, vec2 offset, vec2 scaledCoord) {
                 bloom += texture2D(colortex0, bloomCoord).rgb * wg;
             }
         }
-        bloom /= 4096.0;
+        bloom *= 0.000244140625;
     }
 
-    return pow(bloom / 128.0, vec3(0.25));
+    return pow(bloom * 0.0078125, vec3(0.25));
 }
 
 //Includes//
