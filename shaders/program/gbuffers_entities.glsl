@@ -135,7 +135,6 @@ void main() {
             #include "/lib/materials/materialHandling/entityMaterials.glsl"
 
             #ifdef IS_IRIS
-                vec3 maRecolor = vec3(0.0);
                 #include "/lib/materials/materialHandling/irisMaterials.glsl"
             #endif
 

@@ -263,4 +263,15 @@
         }
     #endif
 
+
+    // Raw voxel-ID readers (upstream r5.8.1 API) — voxel IDs are stored into voxel_sampler
+    // (image.voxel_img) by UpdateVoxelMap above, so these read the same fork pipeline.
+    uint GetVoxelVolume(ivec3 pos) {
+        return texelFetch(voxel_sampler, pos, 0).x & 32767u;
+    }
+
+    uint GetVoxelVolumeRaw(ivec3 pos) {
+        return texelFetch(voxel_sampler, pos, 0).x;
+    }
+
 #endif //INCLUDE_VOXELIZATION
