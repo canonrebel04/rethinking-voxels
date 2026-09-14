@@ -223,6 +223,24 @@ void main() {
                 }
                 ivec3 coords2 = ivec3(position2);
                 imageAtomicOr(occupancyVolume, coords2, 1<<(k + 8 * int(col.a < 0.9 && doTransparency)));
+                #ifdef FACE_OCCLUSION
+                    if (k == 0) {
+                        int faceIdx = -1;
+                        vec3 absUp = abs(upVec);
+                        if (absUp.x > absUp.y && absUp.x > absUp.z) {
+                            faceIdx = upVec.x > 0.0 ? 3 : 0;
+                        } else if (absUp.y > absUp.z) {
+                            faceIdx = upVec.y > 0.0 ? 4 : 1;
+                        } else {
+                            faceIdx = upVec.z > 0.0 ? 5 : 2;
+                        }
+                        int faceMask = 1 << faceIdx;
+                        if (renderStage != MC_RENDER_STAGE_TERRAIN_SOLID) {
+                            faceMask |= 1 << ((faceIdx + 3) % 6);
+                        }
+                        imageAtomicOr(occupancyVolume, coords2 + ivec3(0, voxelVolumeSize.y, 0), faceMask);
+                    }
+                #endif
             }
         }
         discard;

@@ -99,7 +99,12 @@ bool isEmissive(int mat) {
         mat == 10708 || // spawner
         mat == 10852 || // copper bulb
         mat == 10856 || // weathered copper bulb
-        mat == 10924 || // open eyeblossom
+        mat == 10868 || // trial spawner / vault (active)
+        mat == 10876 || // ominous trial spawner / vault (active)
+        mat == 10976 || // open eyeblossom
+        mat == 10980 || // potted open eyeblossom
+        mat == 10984 || // copper torch
+        mat == 10988 || // copper lantern
         mat == 10948 || // creaking heart
         mat == 10996 || // light block
       //mat == 12740 || // lit candle cake
@@ -453,7 +458,8 @@ vec3 getLightCol(int mat) {
             lightcol = vec3(CANDLE_COL_R, CANDLE_COL_G, CANDLE_COL_B);
             #endif
             break;
-        case 10924: // open eyeblossom
+        case 10976: // open eyeblossom
+        case 10980: // potted open eyeblossom
             #ifdef BLOSSOM_HARDCODED_RESIN_COL
             lightcol = vec3(RESIN_COL_R, RESIN_COL_G, RESIN_COL_B);
             #endif
@@ -776,8 +782,19 @@ int getLightLevel(int mat) {
         case 10836: // brewing stand
             lightlevel = BRIGHTNESS_BREWINGSTAND;
             break;
-        case 10924: // open eyeblossom
+        case 10868: // trial spawner
+        case 10876: // ominous trial spawner
+            lightlevel = BRIGHTNESS_SPAWNER;
+            break;
+        case 10976: // open eyeblossom
+        case 10980: // potted open eyeblossom
             lightlevel = BLOSSOM_BRIGHTNESS_RESIN;
+            break;
+        case 10984: // copper torch
+            lightlevel = BRIGHTNESS_TORCH;
+            break;
+        case 10988: // copper lantern
+            lightlevel = LANTERN_BRIGHTNESS_TORCH;
             break;
         case 10948: // creaking heart
             lightlevel = HEART_BRIGHTNESS_RESIN;

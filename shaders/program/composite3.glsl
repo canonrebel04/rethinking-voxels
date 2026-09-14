@@ -101,18 +101,23 @@
         #endif
 
         if (coc * 0.5 > 1.0 / max(viewWidth, viewHeight)) {
+            float totalDoFWeight = 0.0;
             for (int i = 0; i < 18; i++) {
                 vec2 offset = dofOffsets[i] * coc * 0.0085 * dofScale;
                 float lod = log2(viewHeight * aspectRatio * coc * 0.75 / 320.0);
+                float sampleZ = texture2DLod(depthtex1, texCoord + offset, 0.0).r;
+                float sampleCoC = max(abs(sampleZ - centerDepthSmooth) * 0.125 * WB_DOF_I - 0.0001, 0.0);
+                float sampleWeight = clamp(sampleCoC / (coc + 1e-4), 0.15, 1.0);
                 #ifndef WB_CHROMATIC
-                    dof += texture2DLod(colortex0, texCoord + offset, lod).rgb;
+                    dof += texture2DLod(colortex0, texCoord + offset, lod).rgb * sampleWeight;
                 #else
                     dof += vec3(texture2DLod(colortex0, texCoord + offset + aberration, lod).r,
                                 texture2DLod(colortex0, texCoord + offset             , lod).g,
-                                texture2DLod(colortex0, texCoord + offset - aberration, lod).b);
+                                texture2DLod(colortex0, texCoord + offset - aberration, lod).b) * sampleWeight;
                 #endif
+                totalDoFWeight += sampleWeight;
             }
-            dof /= 18.0;
+            if (totalDoFWeight > 0.0) dof /= totalDoFWeight;
             color = dof;
         }
     }

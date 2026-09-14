@@ -167,7 +167,7 @@ vec4 getShadedReflection(ivec3 voxelPos, vec3 oldPlayerPos, vec3 playerPos, vec3
     float directionalShading = noDirectionalShading ? 1.0 : (NdotU + 1.0) * 0.25 + 0.5;
 
     vec3 centerPlayerPos = floor(playerPos + cameraPosition + normal * 0.01) - cameraPosition + 0.5;
-    vec3 playerPosM = mix(centerPlayerPos, playerPos, (AO - 0.8) / 0.2);
+    vec3 playerPosM = mix(centerPlayerPos, playerPos, clamp01((AO - 0.5) / 0.5));
     vec3 voxelPosM = SceneToVoxel(playerPosM);
          voxelPosM = clamp01(voxelPosM / vec3(voxelVolumeSize));
     vec4 lightVolume = GetLightVolume(voxelPosM);

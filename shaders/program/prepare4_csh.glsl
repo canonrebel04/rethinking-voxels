@@ -71,6 +71,7 @@ shared vec3[MAX_LIGHT_COUNT] lightPositions;
 shared vec3[MAX_LIGHT_COUNT] lightCols;
 shared int[MAX_LIGHT_COUNT] extraData;
 shared float[MAX_LIGHT_COUNT] weights;
+shared float[MAX_LIGHT_COUNT] lightSizes;
 shared uint[128] lightHashMap;
 
 ivec2 getFlipPair(int index, int stage) {
@@ -133,6 +134,16 @@ void registerLight(ivec3 lightCoord, vec3 referencePos, vec3 referenceNormal, fl
     if (!isStillLight) {
         for (int k = 0; k < 6; k++) {
             ivec3 offset = (k/3*2-1) * ivec3(equal(ivec3(k%3), ivec3(0, 1, 2)));
+            #ifdef FACE_OCCLUSION
+                ivec3 baseCoord = lightCoord + voxelVolumeSize/2;
+                ivec3 neighborCoord = baseCoord + offset;
+                if (all(greaterThanEqual(neighborCoord, ivec3(0))) && all(lessThan(neighborCoord, voxelVolumeSize))) {
+                    int faceMaskA = imageLoad(occupancyVolume, baseCoord + ivec3(0, voxelVolumeSize.y, 0)).r;
+                    int faceMaskB = imageLoad(occupancyVolume, neighborCoord + ivec3(0, voxelVolumeSize.y, 0)).r;
+                    int oppK = (k + 3) % 6;
+                    if ((faceMaskA & (1 << k)) != 0 || (faceMaskB & (1 << oppK)) != 0) continue;
+                }
+            #endif
             if ((imageLoad(occupancyVolume, lightCoord + offset + voxelVolumeSize/2).r >> 16 & 1) != 0) {
                 isStillLight = true;
                 lightCoord += offset;
@@ -223,7 +234,7 @@ void main() {
             ivec2 offset = i < k ? ivec2(i, k) : ivec2(k, 2 * k - 2 - i);
             ivec2 newReadTexelCoord = readTexelCoord + offset;
             normalDepthData = texelFetch(colortex8, newReadTexelCoord, 0);
-            bool validData = (normalDepthData.a < 1.5 && length(normalDepthData.rgb) > 0.1 && all(lessThan(newReadTexelCoord, ivec2(view + 0.1))));
+            validData = (normalDepthData.a < 1.5 && length(normalDepthData.rgb) > 0.1 && all(lessThan(newReadTexelCoord, ivec2(view + 0.1))));
             if (validData) {
                 readTexelCoord = newReadTexelCoord;
             }
@@ -345,6 +356,7 @@ void main() {
         lightCols[index] = origLightCol;
         extraData[index] = origExtraData;
         lightCoords[index].w = 0;
+        lightSizes[index] = clamp(0.5, 0.01, getDistanceField(origLightPos));
     }
     barrier();
     memoryBarrierShared();
@@ -358,9 +370,8 @@ void main() {
         uint thisLightIndex = 0;
         for (; thisLightIndex < MAX_LIGHT_COUNT; thisLightIndex++) {
             if (thisLightIndex >= lightCount) break;
-            float lightSize = 0.5;
             vec3 lightPos = lightPositions[thisLightIndex];
-            lightSize = clamp(lightSize, 0.01, getDistanceField(lightPos));
+            float lightSize = lightSizes[thisLightIndex];
             float ndotl0 = max(0.0, dot(normalize(lightPos - vxPos), normalDepthData.xyz));
             vec3 dir = lightPos - biasedVxPos;
             float dirLen = length(dir);

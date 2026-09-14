@@ -249,7 +249,11 @@ void main() {
     #endif
 
     #ifdef COLORED_LIGHT_FOG
-        vec3 lightFog = GetColoredLightFog(nPlayerPos, translucentMult, lViewPos, lViewPos1, dither);
+        float cloudLinearDepth = texelFetch(colortex5, texelCoord, 0).a;
+        float cloudDistance = pow2(cloudLinearDepth) * renderDistance;
+        float effectiveLViewPos1 = min(lViewPos1, cloudDistance);
+        vec3 lightFogTransmittance = vec3(1.0);
+        vec3 lightFog = GetColoredLightFog(nPlayerPos, translucentMult, lViewPos, effectiveLViewPos1, dither, lightFogTransmittance);
         float lightFogMult = COLORED_LIGHT_FOG_I;
 
         #ifdef OVERWORLD
@@ -257,6 +261,7 @@ void main() {
         #endif
     #else
         vec3 lightFog = vec3(0.0);
+        vec3 lightFogTransmittance = vec3(1.0);
     #endif
 
     if (isEyeInWater == 1) {
@@ -280,13 +285,18 @@ void main() {
     }
 
     #ifdef COLORED_LIGHT_FOG
-        color /= 1.0 + pow2(GetLuminance(lightFog)) * lightFogMult * 2.0;
+        vec3 effectiveTransmittance = mix(vec3(1.0), lightFogTransmittance, lightFogMult);
+        color *= effectiveTransmittance;
 
-        lightFog = lightFog * lightFogMult * 0.5;
+        lightFog *= lightFogMult;
         #ifdef TAA // Fix banding
-            lightFog = max(vec3(0.0), lightFog + (dither - 0.5) * 0.02);
+            lightFog = max(vec3(0.0), lightFog + (dither - 0.5) * 0.005);
         #endif
         color += lightFog;
+
+        #ifdef LIGHTSHAFTS_ACTIVE
+            volumetricEffect.rgb *= effectiveTransmittance;
+        #endif
     #endif
 
     #ifdef IMPROVED_RAIN

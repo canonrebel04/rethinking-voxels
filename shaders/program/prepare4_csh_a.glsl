@@ -169,12 +169,17 @@ void main() {
                     newVxPos = floor(newVxPos * PIXEL_TEXEL_SCALE + 0.5 * newNormalDepthData.xyz) / PIXEL_TEXEL_SCALE + 0.5 / PIXEL_TEXEL_SCALE;
                 #endif
 
-                float weight = max(1e-5, 1.0 - 5.0 * (
-                        length(normalDepthData - newNormalDepthData)
-                        #ifdef BLOCKLIGHT_HIGHLIGHT
-                            + 3 * abs(thisSmoothness - smoothnesses[c.x][c.y])
-                        #endif
-                    )) * exp(
+                float normalWeight = max(0.0, dot(normalDepthData.xyz, newNormalDepthData.xyz));
+                normalWeight *= normalWeight;
+                normalWeight *= normalWeight;
+                float depthDiff = abs(normalDepthData.a - newNormalDepthData.a);
+                float depthWeight = max(0.0, 1.0 - depthDiff * 25.0);
+                float geomWeight = normalWeight * depthWeight;
+                #ifdef BLOCKLIGHT_HIGHLIGHT
+                    geomWeight -= 3.0 * abs(thisSmoothness - smoothnesses[c.x][c.y]);
+                #endif
+
+                float weight = max(1e-5, geomWeight) * exp(
                         -dot(texCoordOffset, texCoordOffset)*0.8
                         #if defined DO_PIXELATION_EFFECTS && defined PIXELATED_BLOCKLIGHT
                             - 2.0 * PIXEL_TEXEL_SCALE / lPlayerPos * length(vxPos - newVxPos - dot(playerPos.xyz, vxPos - newVxPos) / pow2(lPlayerPos) * playerPos.xyz)
