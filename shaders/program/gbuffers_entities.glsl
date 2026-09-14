@@ -158,7 +158,7 @@ void main() {
             #endif
 
             if (entityId == 50004) { // Lightning Bolt
-                #include "/lib/materials/specificMaterials/entities/lightningBolt.glsl"
+                #include "/lib/materials/specificMaterials/others/lightningBolt.glsl"
             } else if (entityId == 50008) { // Item Frame, Glow Item Frame
                 noSmoothLighting = true;
             } else if (entityId == 50076) { // Boats
