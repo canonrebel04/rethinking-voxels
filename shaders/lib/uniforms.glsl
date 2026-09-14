@@ -80,6 +80,10 @@ uniform sampler2D colortex6;
 uniform sampler2D colortex7;
 uniform sampler2D colortex8;
 uniform sampler2D colortex9;
+#ifndef COLORTEX12_DECLARED
+#define COLORTEX12_DECLARED
+uniform sampler2D colortex12; // IMPROVED_RAIN data (written by gbuffers_weather)
+#endif
 uniform sampler2D depthtex0;
 uniform sampler2D depthtex1;
 uniform sampler2D depthtex2;

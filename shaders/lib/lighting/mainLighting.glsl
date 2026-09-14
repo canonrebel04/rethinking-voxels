@@ -22,7 +22,10 @@ vec3 fractCamPos = cameraPositionInt.y == -98257195 ? fract(cameraPosition) : ca
 
 #if defined PER_PIXEL_LIGHT && !defined GBUFFERS_WATER
     #include "/lib/util/random.glsl"
+    #ifndef COLORTEX12_DECLARED
+    #define COLORTEX12_DECLARED
     uniform sampler2D colortex12;
+    #endif
     #ifdef BLOCKLIGHT_HIGHLIGHT
         uniform sampler2D colortex14;
     #endif

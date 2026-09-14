@@ -23,7 +23,11 @@ float GetLuminance(vec3 color) {
 }
 
 vec3 DoLuminanceCorrection(vec3 color) {
-    return color / GetLuminance(color);
+    return color / (GetLuminance(color) + 0.0001);
+}
+
+vec3 DoReducedLuminanceCorrection(vec3 color, float reduceAmount) {
+    return color / mix(GetLuminance(color), 1.0, reduceAmount);
 }
 
 float GetBiasFactor(float NdotLM) {
