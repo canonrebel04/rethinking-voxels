@@ -181,8 +181,7 @@ vec4 GetVolumetricLight(inout float vlFactor, vec3 translucentMult, float lViewP
                 vec3 shadowPos = GetShadowPos(scenePos);
                 if (length(shadowPos.xy * 2.0 - 1.0) < 1.0) {
                     // 28A3DK6 We need to use texelFetch here or a lot of Nvidia GPUs can't get a valid value
-                    // shadowtex0NW = unfiltered sampler2D alias (shadowtex0 is sampler2DShadow under shadowHardwareFiltering)
-                    float shadowSample = texelFetch(shadowtex0NW, ivec2(shadowPos.xy * shadowMapResolutionM), 0).x;
+                    float shadowSample = texelFetch(shadowtex0, ivec2(shadowPos.xy * shadowMapResolutionM), 0).x;
                           shadowSample = clamp((shadowSample - shadowPos.z) * 65536.0, 0.0, 1.0);
 
                     localDensity = vec3(shadowSample);
@@ -280,7 +279,7 @@ vec4 GetVolumetricLight(inout float vlFactor, vec3 translucentMult, float lViewP
                     for (float h = 0.45; h < salsY; h++) {
                         vec2 coord = 0.3 + 0.4 * viewM * vec2(i, h);
                         ivec2 icoord = ivec2(coord * shadowMapResolutionM);
-                        float salsSample = texelFetch(shadowtex0NW, icoord, 0).x; // read 28A3DK6
+                        float salsSample = texelFetch(shadowtex0, icoord, 0).x; // read 28A3DK6
                         if (salsSample < 0.55) {
                             float sampledHeight = texture2D(shadowcolor1, coord).a;
                             if (sampledHeight > 0.0) {
