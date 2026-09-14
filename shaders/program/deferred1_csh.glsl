@@ -31,6 +31,19 @@ float vlFactor = 0.0;
 
 vec2 view = vec2(viewWidth, viewHeight);
 
+// Light vector + specular symbols needed by reflections.glsl -> reflectionBackground.glsl
+// (mirrors the declarations in program/deferred1.glsl)
+#ifdef OVERWORLD
+    vec3 lightVec = sunVec * ((timeAngle < 0.5325 || timeAngle > 0.9675) ? 1.0 : -1.0);
+#else
+    vec3 lightVec = sunVec;
+#endif
+
+#include "/lib/colors/lightAndAmbientColors.glsl"
+#include "/lib/lighting/ggx.glsl"
+
+vec3 highlightColor = normalize(pow(lightColor, vec3(0.37))) * (0.3 + 1.5 * sunVisibility2) * (1.0 - 0.85 * rainFactor);
+
 #include "/lib/atmospherics/fog/mainFog.glsl"
 #include "/lib/colors/skyColors.glsl"
 #include "/lib/util/spaceConversion.glsl"
@@ -62,7 +75,7 @@ void main() {
         int materialMaskInt = 0;
 
         vec3 texture6 = texelFetch(colortex6, coord, 0).rgb;
-        bool entityOrHand = z0 < 0.56;
+        bool entityOrParticle = z0 < 0.56;
         materialMaskInt = int(texture6.g * 255.1);
         float intenseFresnel = 0.0;
         smoothnessD = texture6.r;
@@ -101,7 +114,7 @@ void main() {
             float writeFactor = 1.0;
         #endif
         #if defined CUSTOM_PBR || defined IPBR && defined IS_IRIS
-            if (entityOrHand) {
+            if (entityOrParticle) {
                 noiseMult *= 0.1;
                 #ifdef TEMPORAL_FILTER
                     blendFactor = 0.0;
