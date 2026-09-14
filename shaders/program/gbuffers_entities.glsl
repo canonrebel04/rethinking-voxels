@@ -131,6 +131,7 @@ void main() {
         #ifdef SLANTED_BLOCK_EDGES
             GenerateEdgeSlopes(normalM);
         #endif
+        vec3 maRecolor = vec3(0.0);
         #ifdef IPBR
             #include "/lib/materials/materialHandling/entityMaterials.glsl"
 

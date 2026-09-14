@@ -129,6 +129,7 @@ void main() {
         vec3 shadowMult = vec3(0.4);
         #ifdef IPBR
             #ifdef IS_IRIS
+                vec3 maRecolor = vec3(0.0);
                 #include "/lib/materials/materialHandling/irisMaterials.glsl"
 
                 if (materialMask != OSIEBCA * 254.0) materialMask += OSIEBCA * 100.0; // Entity Reflection Handling
