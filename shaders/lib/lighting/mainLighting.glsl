@@ -275,7 +275,20 @@ void DoLighting(inout vec4 color, inout vec3 shadowMult, vec3 playerPos, vec3 vi
                             }
                         #endif
 
-                        shadowMult *= GetShadow(shadowPos, lViewPos, lightmap.y, offset, leaves);
+                        int shadowSampleBooster = int(subsurfaceMode > 0 && lViewPos < 10.0);
+                        #if SHADOW_QUALITY == 2 // Medium
+                            int shadowSamples = 2 + 2 * shadowSampleBooster;
+                        #elif SHADOW_QUALITY == 3 // High
+                            int shadowSamples = 4 + 4 * shadowSampleBooster;
+                        #elif SHADOW_QUALITY == 4 // Very High
+                            int shadowSamples = 8 + 8 * shadowSampleBooster;
+                        #elif SHADOW_QUALITY == 5 // Ultra
+                            int shadowSamples = 16 + 16 * shadowSampleBooster;
+                        #else
+                            int shadowSamples = 0;
+                        #endif
+
+                        shadowMult *= GetShadow(shadowPos, lightmap.y, offset, shadowSamples, leaves, playerPos);
                     }
 
                     float shadowSmooth = 16.0;
