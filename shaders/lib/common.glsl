@@ -199,6 +199,60 @@
     #define LENSFLARE_MODE 0 //[0 1 2]
     #define LENSFLARE_I 1.00 //[0.05 0.10 0.15 0.20 0.25 0.30 0.35 0.40 0.45 0.50 0.55 0.60 0.65 0.70 0.75 0.80 0.85 0.90 0.95 1.00 1.10 1.20 1.30 1.40 1.50 1.60 1.70 1.80 1.90 2.00 2.20 2.40 2.60 2.80 3.00 3.25 3.50 3.75 4.00 4.25 4.50 4.75 5.00]
     #define TAA_MODE 1 //[1 2 0]
+    #define TAA_SMOOTHING 3 //[2 3 4]
+    #define TAA_JITTER 1 //[0 1 2 3]
+    #define FXAA_STRENGTH 75 //[-1 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100]
+    #define BLOOM_ENABLED 1 //[-1 1]
+    #define ENTITY_SHADOW 1 //[-1 1 2]
+    #define COLORED_LIGHTING 0 //[128 192 256 384 512 768 1024]
+    #define WORLD_SPACE_REFLECTIONS -1 //[-1 1]
+    #if WORLD_SPACE_REFLECTIONS > 0
+        #define WORLD_SPACE_REFLECTIONS_INTERNAL 1
+        #define WORLD_SPACE_PLAYER_REF -1 //[-1 1]
+    #else
+        #define WORLD_SPACE_REFLECTIONS_INTERNAL -1
+    #endif
+    #if COLORED_LIGHTING_INTERNAL > 0
+        #define WORLD_SPACE_REF_MODE 2 //[1 2]
+        #define COLORED_LIGHT_SATURATION 100 //[50 55 60 65 70 75 80 85 90 95 100 105 110 115 120 125]
+    #endif
+    #define GENERATED_NORMAL_RES 128 //[16 32 64 80 96 112 128 144 160 176 192 208 224 240 256]
+    #define REFLECTION_RES 0.5 //[1.0 0.5]
+    #define END_BEAM_INTENSITY 1.00 //[0.00 0.05 0.10 0.15 0.20 0.25 0.30 0.40 0.50 0.60 0.70 0.80 0.90 1.00 1.10 1.20 1.30 1.40 1.50]
+    #define END_STAR_INTENSITY 1.00 //[0.00 0.05 0.10 0.15 0.20 0.25 0.30 0.40 0.50 0.60 0.70 0.80 0.90 1.00 1.10 1.20 1.30 1.40 1.50]
+    #define END_BEAM_HEIGHT 1.00 //[0.10 0.15 0.20 0.25 0.30 0.40 0.50 0.60 0.70 0.80 0.90 1.00 1.10 1.20 1.30]
+    #define END_BEAM_CENTER_ALT 68 //[-240 -232 -224 -216 -208 -200 -192 -184 -176 -168 -160 -152 -144 -136 -128 -120 -112 -104 -96 -88 -80 -72 -68 -64 -56 -48 -40 -32 -24 -16 -8 0]
+    #define END_FLASHES
+    #define NIGHT_NEBULAE -1 //[-1 1]
+    #define RAINBOW_STYLE_DEFINE -1 //[-1 1 4]
+    #define RAINBOW_STYLE_DEFAULT 4
+    #if RAINBOW_STYLE_DEFINE == -1
+        #define RAINBOW_STYLE RAINBOW_STYLE_DEFAULT
+    #endif
+    #define IMPROVED_RAIN_DEFINE 1 //[0 1]
+    #if IMPROVED_RAIN_DEFINE == 1 && !defined MC_OS_MAC && !defined COLOR_CODED_PROGRAMS && MC_VERSION >= 11605
+        #define IMPROVED_RAIN
+    #endif
+    #if RP_MODE == 1
+        #define HIDE_ARMOR 0 //[0 1 2]
+        #define MORE_REFLECTIVE_DISTANT_GLASS
+    #endif
+    #if DETAIL_QUALITY >= 3
+        #define ACT_CORNER_LEAK_FIX
+    #endif
+    #if DETAIL_QUALITY == 0
+        #define LEAF_SHADOW_OPTIMISATION
+        #define LOW_QUALITY_MOTION_BLUR
+    #endif
+    #if DETAIL_QUALITY >= 4
+        #define REFLECTION_BLUR_DEPTH_CHECK
+    #endif
+    #if BLOOM_ENABLED == 1 && MOTION_BLUR_EFFECT == 1
+        #define MOTION_BLUR_BLOOM_FOG_FIX
+    #endif
+    #if defined DISTANT_HORIZONS && defined TAA
+        #define DH_BLENDING
+    #endif
     #define DISTANT_LIGHT_BOKEH
 
     #define WORLD_BLUR 0 //[0 1 2]
