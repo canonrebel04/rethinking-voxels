@@ -1,3 +1,6 @@
 ## 2024-09-07 - Missing UI Setting Exposed
 **Learning:** Orphaned configuration sliders that are implemented in the code (e.g. `VBL_STRENGTH` in Minecraft shaders) but missing from UI screens or underlying `#define` assignments can cause confusion and leave accessible tuning options hidden from users.
 **Action:** When auditing configurations like `shaders.properties`, use shell scripting to extract all sliders, cross-reference them against UI mappings (like `screen.VBL_SETTINGS=...`), and define corresponding backend `#define` logic if missing to correctly expose functional options.
+## 2024-09-15 - Discovering Hidden UI Options in Shaderpacks
+**Learning:** In Minecraft shaderpacks (like rethinking-voxels), there are often settings implemented in the shader source code (e.g., `#define CONWAY`) and fully localized in `.lang` files, but entirely hidden from users because they are missing from the UI configuration definitions (`screen.*=`) in `shaders.properties`. These settings are sometimes replaced by `<empty>` layout spacers.
+**Action:** Audit `shaders.properties` by cross-referencing available `.lang` keys and implemented `#define` macros against mapped `screen` options to uncover low-hanging micro-UX opportunities that give users access to previously hidden features.
