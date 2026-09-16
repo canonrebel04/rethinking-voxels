@@ -47,7 +47,9 @@ vec3 BloomTile(float lod, vec2 offset, vec2 scaledCoord) {
         bloom += 0.0625 * texture2D(colortex0, (scaledCoord - offset + vec2(-d.x, -d.y)) * scale).rgb;
     }
 
-    return pow(bloom / 128.0, vec3(0.25));
+    // Performance optimization: multiply by reciprocal instead of division
+    // 1.0 / 128.0 = 0.0078125
+    return pow(bloom * 0.0078125, vec3(0.25));
 }
 
 //Includes//

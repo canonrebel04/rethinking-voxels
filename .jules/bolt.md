@@ -1,0 +1,3 @@
+## 2026-09-16 - GLSL Constant Division Optimization
+**Learning:** In GPU shader languages (like GLSL), division is computationally more expensive than multiplication. While some compilers optimize this, explicitly converting division by a constant float to multiplication by its reciprocal ensures the division instruction is eliminated in all environments, providing a micro-optimization in hot paths like fragment shaders.
+**Action:** When performing division by a constant float in GLSL, explicitly replace it with multiplication by its reciprocal (e.g., replace / 128.0 with * 0.0078125) unless the denominator contains a variable.
