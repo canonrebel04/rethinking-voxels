@@ -1,3 +1,6 @@
 ## 2024-09-07 - Missing UI Setting Exposed
 **Learning:** Orphaned configuration sliders that are implemented in the code (e.g. `VBL_STRENGTH` in Minecraft shaders) but missing from UI screens or underlying `#define` assignments can cause confusion and leave accessible tuning options hidden from users.
 **Action:** When auditing configurations like `shaders.properties`, use shell scripting to extract all sliders, cross-reference them against UI mappings (like `screen.VBL_SETTINGS=...`), and define corresponding backend `#define` logic if missing to correctly expose functional options.
+## 2026-09-20 - Web UX to Shaderpack Translation
+**Learning:** In non-web repositories like Minecraft shaderpacks, UX improvements manifest differently. Instead of HTML/React components, 'accessibility' and 'intuitiveness' involve exposing functional but hidden configuration settings to the in-game GUI by mapping defined variables to menu screens in `shaders.properties`.
+**Action:** When acting as a UX agent in non-web environments, abstract the core goal (making features accessible to users) and apply it to the domain's specific configuration format, rather than strictly looking for ARIA labels or CSS.
