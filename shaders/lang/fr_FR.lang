@@ -1307,3 +1307,6 @@ option.ALLAY_COL_B=Bleu
 option.TNT_COL_R=Rouge
 option.TNT_COL_G=Vert
 option.TNT_COL_B=Bleu
+
+option.BLOCKLIGHT_I=Intensité des lumières
+option.BLOCKLIGHT_I.comment=Contrôle la luminosité des lumières colorées des blocs.
