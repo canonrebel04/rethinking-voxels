@@ -24,7 +24,7 @@ vec2 view = vec2(viewWidth, viewHeight);
 
 #if MOTION_BLUR_EFFECT == 1 && defined MOTION_BLUR_BLOOM_FOG_FIX
     float SdotU = dot(sunVec, upVec);
-    float sunFactor = SdotU < 0.0 ? clamp(SdotU + 0.375, 0.0, 0.75) / 0.75 : clamp(SdotU + 0.03125, 0.0, 0.0625) / 0.0625;
+    float sunFactor = SdotU < 0.0 ? clamp(SdotU * 1.333333 + 0.5, 0.0, 1.0) : clamp(SdotU * 16.0 + 0.5, 0.0, 1.0);
 #endif
 
 //Common Functions//
