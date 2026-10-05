@@ -1,3 +1,6 @@
 ## 2024-09-07 - Missing UI Setting Exposed
 **Learning:** Orphaned configuration sliders that are implemented in the code (e.g. `VBL_STRENGTH` in Minecraft shaders) but missing from UI screens or underlying `#define` assignments can cause confusion and leave accessible tuning options hidden from users.
 **Action:** When auditing configurations like `shaders.properties`, use shell scripting to extract all sliders, cross-reference them against UI mappings (like `screen.VBL_SETTINGS=...`), and define corresponding backend `#define` logic if missing to correctly expose functional options.
+## 2024-10-26 - Exposing Hidden Shader Configuration Options
+**Learning:** In shaderpack configurations, translating and implementing features in `.glsl` and `.lang` files is insufficient if they are not explicitly mapped in `shaders.properties`. These "hidden" settings (like `CONWAY` or `MOTION_BLURRING`) represent high-value micro-UX improvements that can be exposed by replacing `<empty>` layout spacers in the menu screens.
+**Action:** Always cross-reference all base translation keys from `.lang` files against options mapped in `shaders.properties` to uncover functional but inaccessible settings, thereby enhancing the configurability and user control of the shaderpack.
