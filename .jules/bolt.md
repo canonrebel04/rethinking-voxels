@@ -1,0 +1,3 @@
+## 2023-10-08 - Saturate Optimization: clamp(x, 0, max)/max
+**Learning:** In GLSL, `clamp(x + c, 0.0, max) / max` requires division and limits the compiler's ability to use the free `saturate` instruction modifier (which clamps to [0.0, 1.0]). Modern GLSL compilers don't always automatically refactor `clamp(..., 0, max)/max` into `saturate(...)`.
+**Action:** Replaced expressions like `clamp(SdotU + 0.0625, 0.0, 0.125) / 0.125` with `clamp(SdotU * 8.0 + 0.5, 0.0, 1.0)` to eliminate the division entirely and guarantee the compiler can map the `clamp(..., 0.0, 1.0)` to a free `saturate` instruction modifier on modern GPUs.
