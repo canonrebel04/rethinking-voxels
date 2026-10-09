@@ -33,7 +33,7 @@ layout(r32i) restrict uniform iimage3D occupancyVolume;
 
 //Common Variables//
 float SdotU = dot(sunVec, upVec);
-float sunVisibility = clamp(SdotU + 0.0625, 0.0, 0.125) / 0.125;
+float sunVisibility = clamp(SdotU * 8.0 + 0.5, 0.0, 1.0); // Bolt: Optimize clamp to use free saturate
 
 //Common Functions//
 void DoNaturalShadowCalculation(inout vec4 color1, inout vec4 color2) {

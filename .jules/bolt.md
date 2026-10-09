@@ -1,0 +1,3 @@
+## 2024-05-24 - GLSL Constant Folding Limits
+**Learning:** Modern GLSL compilers perform constant folding, so replacing division by a constant (e.g., `x / 128.0`) with multiplication by its reciprocal (`x * 0.0078125`) yields no measurable performance benefit. However, replacing operations like `clamp(x + c, 0.0, max_val) / max_val` with `clamp(x * (1.0/max_val) + (c/max_val), 0.0, 1.0)` is beneficial, not just to replace division with multiplication, but because it enables the compiler to use a free `saturate` instruction modifier for the `[0.0, 1.0]` range.
+**Action:** Always rewrite `clamp(val, 0.0, max_val) / max_val` into `clamp(val * (1.0/max_val), 0.0, 1.0)` to leverage the free saturate modifier on GLSL instructions.
