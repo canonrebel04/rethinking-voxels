@@ -1,0 +1,3 @@
+## 2024-05-18 - Replacing division by constant with multiplication and clamp optimizations
+**Learning:** Found divisions by constants (e.g., `/ 0.75` and `/ 0.0625`) inside clamp operations in very hot paths (like `sunFactor` calculation in almost every fragment shader). While modern GLSL compilers do strength reduction (division to multiplication) and constant folding, restructuring expressions from `clamp(x + c, 0.0, max) / max` to `clamp(x * (1.0/max) + (c/max), 0.0, 1.0)` ensures the compiler can map it to a free `saturate` modifier, avoiding extra operations.
+**Action:** Restructured `sunFactor` and `sunVisibility` calculations to use multiplication and the [0,1] clamp range directly, optimizing across 26 shader files.
