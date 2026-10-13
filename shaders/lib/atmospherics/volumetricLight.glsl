@@ -164,7 +164,7 @@ vec4 GetVolumetricLight(inout vec3 color, inout float vlFactor, vec3 translucent
             #ifdef OVERWORLD
                 float percentComplete = currentDist / maxDist;
                 float sampleMult = mix(percentComplete * 3.0, sampleMultIntense, max(rainFactor, vlSceneIntensity));
-                if (currentDist < 5.0) sampleMult *= smoothstep1(clamp(currentDist / 5.0, 0.0, 1.0));
+                if (currentDist < 5.0) sampleMult *= smoothstep1(clamp(currentDist * 0.2, 0.0, 1.0));
                 sampleMult /= sampleCount;
             #endif
 

@@ -50,7 +50,7 @@ void DoWorldOutline(inout vec3 color, float linearZ0, vec3 playerPos, float fres
     float slope = (1.0 / linearZ0 - rA) * (linearZ0 * linearZ0);
 
     float threshold = linearZ0 / 2000.0 * WORLD_OUTLINE_THICKNESS;
-    float outline = clamp(slope / threshold, 0.0, 1.0) * WORLD_OUTLINE_I;
+    float outline = clamp(slope * (1.0 / threshold), 0.0, 1.0) * WORLD_OUTLINE_I;
 
     outline *= outlineMult;
  
