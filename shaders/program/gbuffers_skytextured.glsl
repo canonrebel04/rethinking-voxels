@@ -21,7 +21,7 @@ flat in vec4 glColor;
 //Common Variables//
 #ifdef OVERWORLD
     float SdotU = dot(sunVec, upVec);
-    float sunVisibility = clamp(SdotU + 0.0625, 0.0, 0.125) / 0.125;
+    float sunVisibility = clamp(SdotU * 8.0 + 0.5, 0.0, 1.0) /* Opt: FMA + saturate */;
     float sunVisibility2 = sunVisibility * sunVisibility;
 #endif
 
