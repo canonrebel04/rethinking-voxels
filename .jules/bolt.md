@@ -1,0 +1,3 @@
+## 2024-10-17 - GLSL FMA and saturate optimizations
+**Learning:** Modern GLSL compilers can optimize algebraic expressions matching `x * a + b` into a single Fused Multiply-Add (FMA) instruction. Additionally, if clamped between 0 and 1, the compiler can use a free `saturate` modifier. We optimized `sunFactor` and `sunVisibility` across all shaders by replacing division with multiplication by a reciprocal, converting to FMA form, and clamping strictly to `[0.0, 1.0]`.
+**Action:** When finding `clamp(x + b, 0.0, c) / c`, refactor to `clamp(x * (1.0/c) + (b/c), 0.0, 1.0) /* Opt: FMA + saturate */`. This saves division and clamping instructions.
