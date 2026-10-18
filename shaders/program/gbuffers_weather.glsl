@@ -23,8 +23,8 @@ flat in vec4 glColor;
 
 //Common Variables//
 float SdotU = dot(sunVec, upVec);
-float sunFactor = SdotU < 0.0 ? clamp(SdotU + 0.375, 0.0, 0.75) / 0.75 : clamp(SdotU + 0.03125, 0.0, 0.0625) / 0.0625;
-float sunVisibility = clamp(SdotU + 0.0625, 0.0, 0.125) / 0.125;
+float sunFactor = SdotU < 0.0 ? clamp(SdotU * 1.333333333 + 0.5, 0.0, 1.0) : clamp(SdotU * 16.0 + 0.5, 0.0, 1.0); /* Opt: FMA + saturate */
+float sunVisibility = clamp(SdotU * 8.0 + 0.5, 0.0, 1.0); /* Opt: FMA + saturate */
 float sunVisibility2 = sunVisibility * sunVisibility;
 
 //Common Functions//
