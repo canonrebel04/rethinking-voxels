@@ -111,7 +111,7 @@
     #endif
 
     float GetAtmFogAltitudeFactor(float altitude) {
-        float altitudeFactor = pow2(1.0 - clamp(altitude - atmFogSRATA, 0.0, atmFogCRFTM) / atmFogCRFTM);
+        float altitudeFactor = pow2(clamp((atmFogSRATA + atmFogCRFTM - altitude) / atmFogCRFTM, 0.0, 1.0)); /* Opt: FMA + saturate */
         #ifndef LIGHTSHAFTS_ACTIVE
             altitudeFactor = mix(altitudeFactor, 1.0, rainFactor * 0.2);
         #endif
