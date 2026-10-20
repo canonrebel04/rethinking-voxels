@@ -1,0 +1,3 @@
+## 2024-10-20 - Fused Multiply-Add (FMA) Optimization
+**Learning:** In GLSL shaders, chained arithmetic operations using division and clamp (e.g., `clamp(x + c, 0.0, max_val) / max_val`) are mathematically equivalent to `clamp(x * (1.0/max_val) + (c/max_val), 0.0, 1.0)`. This pattern maps perfectly to a free `saturate` instruction modifier for the `[0.0, 1.0]` range and a Fused Multiply-Add (`mad`) hardware instruction, reducing multiple operations into a single instruction.
+**Action:** When performing macro algebraic micro-optimizations like replacing clamped division, always refactor expressions to enable FMA + saturate instructions where possible. Always document this inline with `/* Opt: FMA + saturate */`.

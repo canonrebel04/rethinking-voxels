@@ -410,8 +410,8 @@ void main() {
         vec3 sunVec = vec3(-sin(ang), cos(ang) * sunRotationData);
         vec3 lightVec = sunVec * ((timeAngle < 0.5325 || timeAngle > 0.9675) ? 1.0 : -1.0);
         float SdotU = sunVec.y;
-        float sunFactor = SdotU < 0.0 ? clamp(SdotU + 0.375, 0.0, 0.75) / 0.75 : clamp(SdotU + 0.03125, 0.0, 0.0625) / 0.0625;
-        float sunVisibility = clamp(SdotU + 0.0625, 0.0, 0.125) / 0.125;
+        float sunFactor = SdotU < 0.0 ? clamp(SdotU * 1.333333 + 0.5, 0.0, 1.0) : clamp(SdotU * 16.0 + 0.5, 0.0, 1.0); /* Opt: FMA + saturate */
+        float sunVisibility = clamp(SdotU * 8.0 + 0.5, 0.0, 1.0); /* Opt: FMA + saturate */
         float sunVisibility2 = sunVisibility * sunVisibility;
 
         #define gl_FragCoord vec4(632.5, 126.5, 1.0, 1.0)
