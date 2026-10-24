@@ -1,0 +1,3 @@
+## 2024-10-24 - Sun Visibility Clamp Micro-optimization
+**Learning:** Frequent uses of `clamp(x + c, 0.0, max_val) / max_val` appear across many GLSL shaders for `sunFactor` and `sunVisibility` calculation.
+**Action:** These can be mathematically refactored to `clamp(x * (1.0/max_val) + (c/max_val), 0.0, 1.0)`. This allows the GLSL compiler to optimize the operation using a free `saturate` instruction modifier for the `[0.0, 1.0]` range instead of a separate max limit, whilst also turning the division into a faster multiplication. Always use a python script when replacing this string globally across many files.
