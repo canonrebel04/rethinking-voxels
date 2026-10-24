@@ -732,8 +732,8 @@ value.TAA_MODE.0=OFF §c[-]
 option.DISTANT_LIGHT_BOKEH=Distant Light Bokeh
 option.DISTANT_LIGHT_BOKEH.comment=Makes distant light sources look scattered by applying a single pixel blur in the distance. §a[+]§r This effect benefits from IntegratedPBR+ (optional) by adjusting distant light sources for better looks.
 
-option.MOTION_BLURRING=Motion Blur
-option.MOTION_BLURRING.comment=Applies blur to the image when moving the camera.
+option.MOTION_BLUR_EFFECT=Motion Blur
+option.MOTION_BLUR_EFFECT.comment=Applies blur to the image when moving the camera.
 
 option.MOTION_BLURRING_STRENGTH=Motion Blur Strength
 option.MOTION_BLURRING_STRENGTH.comment=Adjusts the intensity of motion blur.
