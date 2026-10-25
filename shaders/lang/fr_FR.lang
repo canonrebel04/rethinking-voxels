@@ -1307,3 +1307,5 @@ option.ALLAY_COL_B=Bleu
 option.TNT_COL_R=Rouge
 option.TNT_COL_G=Vert
 option.TNT_COL_B=Bleu
+option.BLOCKLIGHT_I=Intensité des lumières des blocs
+option.BLOCKLIGHT_I.comment=Ajuste la luminosité et l'intensité de l'éclairage des blocs dans le monde.
