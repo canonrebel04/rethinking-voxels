@@ -1309,5 +1309,3 @@ option.TNT_COL_G=Vert
 option.TNT_COL_B=Bleu
 option.BLOCKLIGHT_I=Intensité des lumières des blocs
 option.BLOCKLIGHT_I.comment=Ajuste la luminosité et l'intensité de l'éclairage des blocs dans le monde.
-option.ACCUM_FALLOFF_SPEED=Vitesse d'atténuation GI
-option.ACCUM_FALLOFF_SPEED.comment=Contrôle la vitesse à laquelle les anciennes données d'éclairage GI se dégradent et sont remplacées par de nouveaux échantillons.
