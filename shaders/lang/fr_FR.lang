@@ -624,8 +624,8 @@ option.LENSFLARE.comment=Ajoute un effet de réflexion de l'objectif de la camé
 option.LENSFLARE_I=Intensité du facteur de flare
 option.LENSFLARE_I.comment=Ajuste l'intensité du facteur de flare
 
-option.MOTION_BLURRING=Flou de mouvement
-option.MOTION_BLURRING.comment=Ajoute un effet flou de mouvement.
+option.MOTION_BLUR_EFFECT=Flou de mouvement
+option.MOTION_BLUR_EFFECT.comment=Ajoute un effet flou de mouvement.
 
 option.MOTION_BLURRING_STRENGTH=Intensité du flou de mouvement
 option.MOTION_BLURRING_STRENGTH.comment=Ajuste l'intensité du flou de mouvement.
