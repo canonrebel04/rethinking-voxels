@@ -121,6 +121,34 @@ vec4 voxelTrace(vec3 start, vec3 dir, out vec3 normal, int hitMask) {
             break;
         }
         int thisVoxelData = imageLoad(occupancyVolume, thisVoxelCoord).r;
+        #ifdef FACE_OCCLUSION
+        if (k > 0) {
+            int enterFace = -1;
+            int exitFace = -1;
+            if (normal.x > 0.5) {
+                enterFace = dirsgn.x > 0.0 ? 0 : 3;
+                exitFace  = dirsgn.x > 0.0 ? 3 : 0;
+            } else if (normal.y > 0.5) {
+                enterFace = dirsgn.y > 0.0 ? 1 : 4;
+                exitFace  = dirsgn.y > 0.0 ? 4 : 1;
+            } else if (normal.z > 0.5) {
+                enterFace = dirsgn.z > 0.0 ? 2 : 5;
+                exitFace  = dirsgn.z > 0.0 ? 5 : 2;
+            }
+            if (enterFace >= 0) {
+                int faceMaskThis = imageLoad(occupancyVolume, thisVoxelCoord + ivec3(0, voxelVolumeSize.y, 0)).r;
+                ivec3 prevVoxelCoord = thisVoxelCoord - ivec3(normal * dirsgn);
+                int faceMaskPrev = 0;
+                if (all(greaterThanEqual(prevVoxelCoord, ivec3(0))) && all(lessThan(prevVoxelCoord, voxelVolumeSize))) {
+                    faceMaskPrev = imageLoad(occupancyVolume, prevVoxelCoord + ivec3(0, voxelVolumeSize.y, 0)).r;
+                }
+                if (((faceMaskThis & (1 << enterFace)) != 0) || ((faceMaskPrev & (1 << exitFace)) != 0)) {
+                    normal *= -dirsgn;
+                    return vec4(start + w * dir, 1);
+                }
+            }
+        }
+        #endif
         if (w > 1 || (thisVoxelData & hitMask) != 0) {
             normal *= -dirsgn;
             return vec4(start + w * dir, thisVoxelData & hitMask);

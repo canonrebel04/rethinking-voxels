@@ -15,6 +15,7 @@ noperspective in vec2 texCoord;
 #endif
 
 //Pipeline Constants//
+const bool colortex0MipmapEnabled = true;
 
 //Common Variables//
 float pw = 1.0 / viewWidth;
@@ -29,7 +30,14 @@ vec2 view = vec2(viewWidth, viewHeight);
 
 //Common Functions//
 void DoBSLTonemap(inout vec3 color) {
-    color = T_EXPOSURE * color;
+    #ifdef AUTO_EXPOSURE
+        vec3 centerSample = texture2DLod(colortex0, vec2(0.5), 9.0).rgb;
+        float sceneLum = dot(centerSample, vec3(0.2126, 0.7152, 0.0722));
+        float autoExposure = clamp(0.25 / (sceneLum + 0.18), 0.6, 2.2);
+        color = T_EXPOSURE * autoExposure * color;
+    #else
+        color = T_EXPOSURE * color;
+    #endif
     color = color / pow(pow(color, vec3(TM_WHITE_CURVE)) + 1.0, vec3(1.0 / TM_WHITE_CURVE));
     color = pow(color, mix(vec3(T_LOWER_CURVE), vec3(T_UPPER_CURVE), sqrt(color)));
 

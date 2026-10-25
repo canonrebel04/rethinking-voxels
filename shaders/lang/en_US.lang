@@ -479,6 +479,9 @@ value.NETHER_COLOR_MODE.3=Biome Based (Modified)
 value.NETHER_COLOR_MODE.2=Biome Based
 value.NETHER_COLOR_MODE.0=Constant
 
+option.AUTO_EXPOSURE=Dynamic Auto-Exposure
+option.AUTO_EXPOSURE.comment=Dynamically adapts camera exposure based on average scene luminance. Gradually brightens dark interiors and caves while preventing blinding glare when emerging into sunlight.
+
 option.T_EXPOSURE=General Brightness
 option.T_EXPOSURE.comment=Also known as "Tonemap Exposure". Adjusts the overall brightness of the whole image.
 
@@ -640,6 +643,9 @@ value.SHADOW_SMOOTHING.4=Very Smooth
 value.SHADOW_SMOOTHING.3=Smooth
 value.SHADOW_SMOOTHING.2=Sharp §c[-]
 value.SHADOW_SMOOTHING.1=Very Sharp §c[-]
+
+option.VARIABLE_PENUMBRA_SHADOWS=Contact-Hardening Shadows
+option.VARIABLE_PENUMBRA_SHADOWS.comment=Simulates physical sun/moon light penumbra (PCSS). Shadows are sharp near contact points and become softer as the occluder's distance increases.
 
 option.PIXELATED_SHADOWS=Pixelated Shadows
 option.PIXELATED_SHADOWS.comment=Makes shadows cast from the sun and moon look pixelated.
@@ -1068,6 +1074,15 @@ option.COLORED_LIGHT_FOG.comment=Adds volumetric blocklight fog to the scene, mo
 option.COLORED_LIGHT_FOG_I=Light Fog Intensity
 option.COLORED_LIGHT_FOG_I.comment=Determines the brightness of the Colored Light Fog.
 
+option.VBL_SAMPLES=Light Fog Raymarch Quality
+option.VBL_SAMPLES.comment=Adjusts the sample count for the froxel-aligned volumetric fog raymarcher. Uses exponential depth slicing: higher values produce smoother transitions around nearby light sources and fine torchlight coronas.
+value.VBL_SAMPLES.8=Low (8)
+value.VBL_SAMPLES.12=Medium (12)
+value.VBL_SAMPLES.16=High (16)
+value.VBL_SAMPLES.20=Very High (20)
+value.VBL_SAMPLES.24=Ultra (24)
+value.VBL_SAMPLES.32=Extreme (32)
+
 option.LIGHT_COLOR_MULTS=§eLighting Color Multipliers
 option.LIGHT_COLOR_MULTS.comment=Enables customization of lighting colors that are seen on all surfaces.
 
@@ -1231,6 +1246,12 @@ value.GI_SAMPLE_COUNT.7=High
 value.GI_SAMPLE_COUNT.13=Ultra
 option.GI_SAMPLE_COUNT.comment=Adjusts the amount of GI samples per voxel and frame. Low: 1 sample. Medium: 3 samples. High: 7 samples. Ultra: 13 samples.
 
+option.ACCUM_FALLOFF_SPEED=GI Accumulation Falloff
+option.ACCUM_FALLOFF_SPEED.comment=Controls the speed at which old GI lighting data decays and is replaced by new samples. Higher values give more responsive lighting with less ghosting behind moving lights, while lower values offer smoother, more stable lighting.
+
+option.DIRECTIONAL_GI=Directional GI (Spherical Harmonics)
+option.DIRECTIONAL_GI.comment=Encodes incoming bounce directions into an L1 Spherical Harmonics volume cache. Enhances indirect lighting with directional contrast, self-shadowing, and normal-mapped surface relief.
+
 option.RT_STEPS=Raytracing Step Count
 option.RT_STEPS.comment=Adjusts the maximum amount of steps the raytracing algorithm will do before giving up. Low values can cause raytracing operations to incorrectly return occlusion if large portions of the ray are close to objects.
 
@@ -1240,6 +1261,9 @@ option.TRANSLUCENT_LIGHT_TINT.comment=When enabled, translucents such as stained
 option.SDF_UPDATE_INTERVAL=SDF Update Interval
 option.SDF_UPDATE_INTERVAL.comment=Controls how many frames are allowed to pass between updates to the same part of the acceleration structure used for raytracing. Lower values cost more performance, but result in more responsive shadows. 1/2 means that updates propagate through the acceleration structure twice per frame.
 value.SDF_UPDATE_INTERVAL.0=1/2
+
+option.FACE_OCCLUSION=Face-Connected Occlusion
+option.FACE_OCCLUSION.comment=Tracks 6-direction face boundary bitmasks in voxel topology. Completely prevents light leaking through thin geometry such as doors, trapdoors, glass panes, slabs, and carpets.
 option.CAULDRON_BRIGHTNESS_LAVA=Lava Cauldron Brightness
 option.BRIGHTNESS_LAVA=Lava Brightness
 option.BRIGHTNESS_FIRE=Fire Brightness

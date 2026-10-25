@@ -27,6 +27,9 @@ ivec3 floorCamPosOffset =
 
 layout(rgba16f) uniform image3D irradianceCacheI;
 layout(rgba16i) uniform iimage3D lightStorage;
+#ifdef DIRECTIONAL_GI
+    layout(rgba16f) uniform image3D irradianceDirCacheI;
+#endif
 
 void main() {
     ivec3 coords = ivec3(gl_GlobalInvocationID);
@@ -39,13 +42,25 @@ void main() {
     for (int k = 0; k < 2; k++) {
         writeColors[k] = (all(lessThan(prevCoords, voxelVolumeSize)) && all(greaterThanEqual(prevCoords, ivec3(0)))) ? imageLoad(irradianceCacheI, prevCoords + ivec3(0, k * voxelVolumeSize.y, 0)) : vec4(0);
     }
-    writeColors[0] *= 0.99; // GI accumulation falloff
+    #ifndef ACCUM_FALLOFF_SPEED
+        #define ACCUM_FALLOFF_SPEED 0.90
+    #endif
+    float giFalloff = clamp(pow(ACCUM_FALLOFF_SPEED, frameTimeSmooth * 60.0), 0.75, 0.99);
+    writeColors[0] *= giFalloff; // Framerate-independent GI accumulation falloff
     if (any(isnan(writeColors[0]))) writeColors[0] = vec4(0);
+    #ifdef DIRECTIONAL_GI
+        vec4 writeColorDir = (all(lessThan(prevCoords, voxelVolumeSize)) && all(greaterThanEqual(prevCoords, ivec3(0)))) ? imageLoad(irradianceDirCacheI, prevCoords) : vec4(0);
+        writeColorDir *= giFalloff;
+        if (any(isnan(writeColorDir))) writeColorDir = vec4(0);
+    #endif
     barrier();
     memoryBarrierImage();
     for (int k = 0; k < 2; k++) {
         imageStore(irradianceCacheI, coords + ivec3(0, k * voxelVolumeSize.y, 0), writeColors[k]);
     }
+    #ifdef DIRECTIONAL_GI
+        imageStore(irradianceDirCacheI, coords, writeColorDir);
+    #endif
     imageStore(lightStorage, coords, lightPos - ivec4(floorCamPosOffset, 0));
 }
 #endif
@@ -375,6 +390,9 @@ void main() {
     layout(local_size_x = 8, local_size_y = 8, local_size_z = 8) in;
 
     layout(rgba16f) uniform volatile image3D irradianceCacheI;
+    #ifdef DIRECTIONAL_GI
+        layout(rgba16f) uniform volatile image3D irradianceDirCacheI;
+    #endif
     #include "/lib/vx/SSBOs.glsl"
     #include "/lib/vx/voxelReading.glsl"
     #include "/lib/util/random.glsl"
@@ -453,12 +471,42 @@ void main() {
                 activeLocs[atomicAdd(activeCount, 1)] = coords;
             } else {
                 vec4 GILight = vec4(0.0);
+                #ifdef DIRECTIONAL_GI
+                    vec4 GIDir = vec4(0.0);
+                #endif
+                float totalWeight = 0.0;
                 for (int k = 0; k < 6; k++) {
                     ivec3 offset = (k/3*2-1)*ivec3(k%3==0, k%3==1, k%3==2);
-                    vec4 otherLight = imageLoad(irradianceCacheI, coords + offset);
-                    GILight += 0.16667 * otherLight;
+                    ivec3 neighborCoord = coords + offset;
+                    if (all(greaterThanEqual(neighborCoord, ivec3(0))) && all(lessThan(neighborCoord, voxelVolumeSize))) {
+                        int neighborOcc = imageLoad(occupancyVolume, neighborCoord).r;
+                        if ((neighborOcc & 1) == 0) {
+                            #ifdef FACE_OCCLUSION
+                                int faceMaskA = imageLoad(occupancyVolume, coords + ivec3(0, voxelVolumeSize.y, 0)).r;
+                                int faceMaskB = imageLoad(occupancyVolume, neighborCoord + ivec3(0, voxelVolumeSize.y, 0)).r;
+                                int oppK = (k + 3) % 6;
+                                if ((faceMaskA & (1 << k)) != 0 || (faceMaskB & (1 << oppK)) != 0) continue;
+                            #endif
+                            vec4 otherLight = imageLoad(irradianceCacheI, neighborCoord);
+                            GILight += otherLight;
+                            #ifdef DIRECTIONAL_GI
+                                vec4 otherDir = imageLoad(irradianceDirCacheI, neighborCoord);
+                                GIDir += otherDir;
+                            #endif
+                            totalWeight += 1.0;
+                        }
+                    }
+                }
+                if (totalWeight > 0.0) {
+                    GILight /= totalWeight;
+                    #ifdef DIRECTIONAL_GI
+                        GIDir /= totalWeight;
+                    #endif
                 }
                 imageStore(irradianceCacheI, coords, GILight);
+                #ifdef DIRECTIONAL_GI
+                    imageStore(irradianceDirCacheI, coords, GIDir);
+                #endif
             }
         }
         barrier();
@@ -485,21 +533,40 @@ void main() {
             if (any(isnan(normal))) normal = vec3(0);
             if (maxDFVal > 0.1 && length(normal) > 0.5) {
                 vec4 GILight = imageLoad(irradianceCacheI, coords);
+                #ifdef DIRECTIONAL_GI
+                    vec4 GIDir = imageLoad(irradianceDirCacheI, coords);
+                #endif
                 float weight = 1.0;
                 int intSkyLight = 0; 
                 for (int k = 0; k < 6; k++) {
                     ivec3 offset = (k/3*2-1) * ivec3(equal(ivec3(k%3), ivec3(0, 1, 2)));
-                    int aroundOccupancy = imageLoad(occupancyVolume, coords + offset).r;
+                    ivec3 neighborCoord = coords + offset;
+                    int aroundOccupancy = imageLoad(occupancyVolume, neighborCoord).r;
                     intSkyLight |= aroundOccupancy >> 28 & 3;
                     if ((aroundOccupancy & 1) != 0 || getDistanceField(vxPos + 0.5 * offset) < 0.2) continue;
+                    #ifdef FACE_OCCLUSION
+                        int faceMaskA = imageLoad(occupancyVolume, coords + ivec3(0, voxelVolumeSize.y, 0)).r;
+                        int faceMaskB = imageLoad(occupancyVolume, neighborCoord + ivec3(0, voxelVolumeSize.y, 0)).r;
+                        int oppK = (k + 3) % 6;
+                        if ((faceMaskA & (1 << k)) != 0 || (faceMaskB & (1 << oppK)) != 0) continue;
+                    #endif
                     float otherWeight = 0.01;
-                    GILight += otherWeight * imageLoad(irradianceCacheI, coords + offset);
+                    GILight += otherWeight * imageLoad(irradianceCacheI, neighborCoord);
+                    #ifdef DIRECTIONAL_GI
+                        GIDir += otherWeight * imageLoad(irradianceDirCacheI, coords + offset);
+                    #endif
                     weight += otherWeight;
                 }
                 float skyLight = mix(vec4(0.0, 0.333, 1.0, 0.666)[intSkyLight], 1.0, 0.4 * eyeBrightness.y / 240.0);
                 GILight /= weight;
+                #ifdef DIRECTIONAL_GI
+                    GIDir /= weight;
+                #endif
                 vxPos -= min(0.3, thisDFval - 0.1) * normal;
                 vec4 ambientContribution = vec4(0);
+                #ifdef DIRECTIONAL_GI
+                    vec4 ambientDirContrib = vec4(0);
+                #endif
                 for (int sampleNum = 0; sampleNum < GI_SAMPLE_COUNT; sampleNum++) {
                     vec3 dir = normalWeightedHemishpereSample(normal);
                     float ndotl = dot(dir, normal);
@@ -524,8 +591,20 @@ void main() {
                         }
                         hitNormal = normalize(hitNormal);
                         vec3 hitBlocklight = imageLoad(irradianceCacheI, ivec3(hitPos + 0.5 * hitNormal + vec3(0.5, 1.5, 0.5) * voxelVolumeSize)).rgb;
-                        vec4 hitGIColor = imageLoad(irradianceCacheI, ivec3(hitPos + 0.5 * hitNormal + 0.5 * voxelVolumeSize - vec3(0.5)));
+                        ivec3 hitGICoord = ivec3(hitPos + 0.5 * hitNormal + 0.5 * voxelVolumeSize - vec3(0.5));
+                        vec4 hitGIColor = imageLoad(irradianceCacheI, hitGICoord);
                         vec3 hitGIlight = hitGIColor.rgb / max(hitGIColor.a, 0.0001);
+                        #ifdef DIRECTIONAL_GI
+                            vec4 hitGIDirData = imageLoad(irradianceDirCacheI, hitGICoord);
+                            vec3 hitD = hitGIDirData.xyz / max(hitGIDirData.w, 0.0001);
+                            float hitDLen = length(hitD);
+                            if (hitDLen > 0.0001) {
+                                float hitDcLum = dot(hitGIlight, vec3(0.2126, 0.7152, 0.0722));
+                                float hitAniso = clamp(hitDLen / (hitDcLum + 0.001), 0.0, 1.0);
+                                float hitNdotL = dot(hitNormal, hitD / hitDLen);
+                                hitGIlight *= mix(1.0, clamp(hitNdotL * 0.85 + 0.85, 0.15, 1.85), hitAniso);
+                            }
+                        #endif
                         if (!(length(hitNormal) > 0.5)) hitNormal = vec3(0);
                         #if defined REALTIME_SHADOWS && defined OVERWORLD
                             vec3 sunShadowPos = GetShadowPos(hitPos - fractCamPos);
@@ -540,14 +619,35 @@ void main() {
                         ambientHitCol *= pow2(length(hitPos - vxPos) / LIGHT_TRACE_LENGTH);
                     }
                     vec3 hitContrib = hitCol * translucentCol.xyz;
-                    if (all(greaterThanEqual(ambientHitCol, vec3(0)))) ambientContribution += vec4(ambientHitCol * translucentCol.xyz, 1.0);
-                    if (all(greaterThanEqual(hitContrib, vec3(0)))) GILight += vec4(hitContrib, 1.0);
+                    if (all(greaterThanEqual(ambientHitCol, vec3(0)))) {
+                        vec3 ambEffective = ambientHitCol * translucentCol.xyz;
+                        ambientContribution += vec4(ambEffective, 1.0);
+                        #ifdef DIRECTIONAL_GI
+                            float ambLum = dot(ambEffective, vec3(0.2126, 0.7152, 0.0722));
+                            ambientDirContrib += vec4(ambLum * dir, 1.0);
+                        #endif
+                    }
+                    if (all(greaterThanEqual(hitContrib, vec3(0)))) {
+                        GILight += vec4(hitContrib, 1.0);
+                        #ifdef DIRECTIONAL_GI
+                            float hitLum = dot(hitContrib, vec3(0.2126, 0.7152, 0.0722));
+                            GIDir += vec4(hitLum * dir, 1.0);
+                        #endif
+                    }
                 }
                 GILight += min(ambientContribution, vec4(ambientColor * 2.0, 1.0) * ambientContribution.a);
+                #ifdef DIRECTIONAL_GI
+                    GIDir += ambientDirContrib;
+                    if (any(isnan(GIDir))) GIDir = vec4(0);
+                    imageStore(irradianceDirCacheI, coords, GIDir);
+                #endif
                 if (any(isnan(GILight))) GILight = vec4(0);
                 imageStore(irradianceCacheI, coords, GILight);
             } else {
                 imageStore(irradianceCacheI, coords, vec4(0));
+                #ifdef DIRECTIONAL_GI
+                    imageStore(irradianceDirCacheI, coords, vec4(0));
+                #endif
             }
         }
     #endif

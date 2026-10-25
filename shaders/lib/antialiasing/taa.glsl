@@ -27,7 +27,7 @@
     float farEdgeDist = 96.0;
 #endif
 
-#if TAA_MOVEMENT_IMPROVEMENT_FILTER == 1
+#if defined TAA_MOVEMENT_IMPROVEMENT_FILTER
     //Catmull-Rom sampling from Filmic SMAA presentation
     vec3 textureCatmullRom(sampler2D colortex, vec2 texcoord, vec2 view) {
         vec2 position = texcoord * view;
@@ -148,25 +148,10 @@ void DoTAA(inout vec3 color, inout vec3 temp, float z1) {
         }
     #endif
 
-    if (
+    bool isEntity = (
         abs(materialMask - 149.5) < 50.0 // Entity Reflection Handling (see common.glsl for details)
-        || materialMask == 254 // No SSAO, No TAA, Reduce Reflection
-    ) { 
-        return;
-    }
-
-    /*if (materialMask == 254) { // No SSAO, No TAA, Reduce Reflection
-        #ifndef CUSTOM_PBR
-            if (z1 <= 0.56) return; // The edge pixel trick doesn't look nice on hand
-        #endif
-        int i = 0;
-        while (i < 4) {
-            int mms = int(texelFetch(colortex6, texelCoord + neighbourhoodOffsets[i], 0).g * 255.1);
-            if (mms != materialMask) break;
-            i++;
-        } // Checking edge-pixels prevents flickering
-        if (i == 4) return;
-    }*/
+        || materialMask == 254 // No SSAO, Responsive TAA, Reduce Reflection
+    );
 
     float z0 = texelFetch(depthtex0, texelCoord, 0).r;
 
@@ -194,7 +179,7 @@ void DoTAA(inout vec3 color, inout vec3 temp, float z1) {
         }
 	#endif
 
-    #if TAA_MOVEMENT_IMPROVEMENT_FILTER == 1
+    #if defined TAA_MOVEMENT_IMPROVEMENT_FILTER
         vec3 tempColor = textureCatmullRom(colortex2, prvCoord, view);
     #else
         vec3 tempColor = texture2D(colortex2, prvCoord).rgb;
@@ -225,6 +210,11 @@ void DoTAA(inout vec3 color, inout vec3 temp, float z1) {
                               prvCoord.y > 0.0 && prvCoord.y < 1.0);
     float velocityFactor = dot(velocity, velocity) * 10.0;
     blendFactor *= max(exp(-velocityFactor) * blendVariable + blendConstant - min(length(cameraPosition - previousCameraPosition), 0.05) * edge, blendMinimum);
+
+    if (isEntity) {
+        // Responsive entity blending prevents ghosting while eliminating crawling edge shimmer on mobs/hand
+        blendFactor = min(blendFactor, 0.45);
+    }
 
     color = mix(color, tempColor, blendFactor);
     temp = color;

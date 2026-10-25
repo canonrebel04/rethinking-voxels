@@ -1,11 +1,8 @@
 #ifndef INCLUDE_VOXELIZATION
     #define INCLUDE_VOXELIZATION
 
-    #if COLORED_LIGHTING_INTERNAL <= 512
-        const ivec3 voxelVolumeSize = ivec3(COLORED_LIGHTING_INTERNAL, COLORED_LIGHTING_INTERNAL * 0.5, COLORED_LIGHTING_INTERNAL);
-    #else
-        const ivec3 voxelVolumeSize = ivec3(COLORED_LIGHTING_INTERNAL, 512 * 0.5, COLORED_LIGHTING_INTERNAL);
-    #endif
+    // voxelVolumeSize is declared by lib/common.glsl (VX_VOL_SIZE-based) — the fork's
+    // shadowcomp1 / vx/ pipeline is sized off that definition, so it must stay authoritative.
 
     float effectiveACTdistance = min(float(COLORED_LIGHTING_INTERNAL), shadowDistance * 2.0);
 
@@ -36,7 +33,7 @@
     }
 
     vec4 GetComplexLightVolume(vec3 pos, sampler3D ff_sampler) {
-        vec4 lightVolume;
+        vec4 lightVolume = vec4(0.0);
 
         #if defined COMPOSITE || defined COMPOSITE1 || defined DEFERRED1
             #undef ACT_CORNER_LEAK_FIX
@@ -78,7 +75,8 @@
                         }
 
                         // Skip Solids
-                        if (int(GetVoxelVolume(p)) == 1) continue;
+                        uint vid = GetVoxelVolume(p);
+                        if (vid != 0u && !(vid >= 200u && vid <= 218u)) continue;
 
                         float weight = w[x].x * w[y].y * w[z].z;
                         lightVolume += weight * texelFetch(ff_sampler, p, 0);
@@ -88,6 +86,7 @@
             }
 
             if (lightDivide > 0.0) lightVolume /= lightDivide;
+            else lightVolume = texelFetch(ff_sampler, clamp(posTX, ivec3(0), voxelVolumeSize - 1), 0);
         #endif
 
         return lightVolume;

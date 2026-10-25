@@ -48,11 +48,7 @@ vec2 randomGaussian() {
 }
 
 vec3 normalWeightedHemishpereSample(vec3 normal) {
-    vec3 s = randomSphereSample();
-    float cosTheta = dot(normal, s);
-    s -= cosTheta * normal;
-    cosTheta *= cosTheta;
-    return sqrt(1.0 - cosTheta*cosTheta) * normalize(s) + cosTheta * normal;
+    return normalize(randomSphereSample() + normal);
 }
 
 #endif

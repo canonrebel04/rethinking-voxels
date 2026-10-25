@@ -6,7 +6,7 @@
     memoryBarrierShared();
     for (int k = 0; k < 2; k++) {
         int index = int(gl_LocalInvocationIndex + k * 512);
-        if (index > 1000) break;
+        if (index >= 1000) break;
         ivec3 currentLocalCoord = ivec3(index%10, index/10%10, index/100%10) - 1;
         ivec3 texCoord = currentLocalCoord + baseCoord;
         int thisLocalOccupancy = imageLoad(occupancyVolume, texCoord).r;

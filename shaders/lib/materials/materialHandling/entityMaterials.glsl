@@ -10,7 +10,7 @@ if (entityId < 50064) {
                         color.r *= 1.1;
                     }
                 } else if (entityId == 50004) { // Lightning Bolt
-                    #include "/lib/materials/specificMaterials/entities/lightningBolt.glsl"
+                    #include "/lib/materials/specificMaterials/others/lightningBolt.glsl"
                 }
             } else {
                 if (entityId == 50008) { // Item Frame, Glow Item Frame

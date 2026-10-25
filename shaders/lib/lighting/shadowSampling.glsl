@@ -50,6 +50,27 @@ vec3 GetShadowPos(vec3 playerPos) {
             offset *= 0.69375;
         #endif
 
+        #ifdef VARIABLE_PENUMBRA_SHADOWS
+            float searchRadius = offset * 2.5;
+            float blockerDistSum = 0.0;
+            float blockerCount = 0.0;
+            for (int s = 0; s < 4; s++) {
+                vec2 bOffset = offsetDist(gradientNoise + float(s) * 1.618, 4) * searchRadius;
+                float sampleDepth = shadow2D(shadowtex0, vec3(shadowPos.st + bOffset, shadowPos.z)).x;
+                if (sampleDepth < 0.999) {
+                    blockerDistSum += (1.0 - sampleDepth);
+                    blockerCount += 1.0;
+                }
+            }
+            if (blockerCount > 0.0) {
+                float avgBlockerDist = blockerDistSum / blockerCount;
+                float penumbra = clamp(avgBlockerDist * 2.5 + 0.35, 0.35, 2.2);
+                offset *= penumbra;
+            } else {
+                offset *= 0.45;
+            }
+        #endif
+
         float shadowPosZM = shadowPos.z;
         for (int i = 0; i < shadowSamples; i++) {
             vec2 offset2 = offsetDist(gradientNoise + i, shadowSamples) * offset;
