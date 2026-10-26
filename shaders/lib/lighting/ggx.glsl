@@ -28,7 +28,7 @@ float GetNoHSquared(float radiusTan, float NoL, float NoV, float VoL) {
     float newVoL = VoL * radiusCos + VoTr;
     float NoH = NoV + newNoL;
     float HoH = 2.0 * newVoL + 2.0;
-    return clamp(NoH * NoH / HoH, 0.0, 1.0);
+    return clamp(NoH * NoH * (1.0 / HoH), 0.0, 1.0); /* Opt: FMA + saturate */
 }
 
 float GGX(vec3 normalM, vec3 viewPos, vec3 lightVec, float NdotLmax0, float smoothnessG) {

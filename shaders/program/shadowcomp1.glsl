@@ -600,7 +600,7 @@ void main() {
                             float hitDLen = length(hitD);
                             if (hitDLen > 0.0001) {
                                 float hitDcLum = dot(hitGIlight, vec3(0.2126, 0.7152, 0.0722));
-                                float hitAniso = clamp(hitDLen / (hitDcLum + 0.001), 0.0, 1.0);
+                                float hitAniso = clamp(hitDLen * (1.0 / (hitDcLum + 0.001)), 0.0, 1.0); /* Opt: FMA + saturate */
                                 float hitNdotL = dot(hitNormal, hitD / hitDLen);
                                 hitGIlight *= mix(1.0, clamp(hitNdotL * 0.85 + 0.85, 0.15, 1.85), hitAniso);
                             }
