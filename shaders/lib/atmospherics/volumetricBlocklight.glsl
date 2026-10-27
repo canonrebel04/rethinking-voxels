@@ -75,7 +75,7 @@ vec3 GetVolumetricBlocklight(vec3 translucentMult, float lViewPos, vec3 nViewPos
 
         float percentComplete = currentDist / maxDist;
         float sampleMult = mix(percentComplete * 3.0, sampleMultIntense, max(rainFactor, vlSceneIntensity));
-        if (currentDist < 5.0) sampleMult *= smoothstep1(clamp(currentDist / 5.0, 0.0, 1.0));
+        if (currentDist < 5.0) sampleMult *= smoothstep1(clamp(currentDist * 0.2, 0.0, 1.0)); /* Opt: FMA + saturate */
         sampleMult /= sampleCount;
 
         if (infnorm(vxPos/voxelVolumeSize) < 0.5) {

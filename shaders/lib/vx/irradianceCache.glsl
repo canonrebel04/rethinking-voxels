@@ -22,7 +22,7 @@ vec3 readIrradianceCache(vec3 vxPos, vec3 normal) {
         float dLen = length(D);
         if (dLen > 0.0001) {
             float dcLum = dot(dcRadiance, vec3(0.2126, 0.7152, 0.0722));
-            float anisotropy = clamp(dLen / (dcLum + 0.001), 0.0, 1.0);
+            float anisotropy = clamp(dLen * (1.0 / (dcLum + 0.001)), 0.0, 1.0); /* Opt: FMA + saturate */
             vec3 dominantDir = D / dLen;
             vec3 worldNormal = length(normal) > 0.001 ? normalize(normal) : vec3(0.0, 1.0, 0.0);
             float NdotL = dot(worldNormal, dominantDir);

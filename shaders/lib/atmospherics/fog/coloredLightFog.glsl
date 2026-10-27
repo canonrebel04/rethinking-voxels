@@ -68,7 +68,7 @@ vec3 GetColoredLightFog(vec3 nPlayerPos, vec3 translucentMult, float lViewPos, f
                 float cosTheta = clamp(dot(nPlayerPos, -dominantDir / dLen), -1.0, 1.0);
                 float hg = (1.0 - g2) / pow(max(0.01, 1.0 + g2 - 2.0 * g * cosTheta), 1.5);
                 float lum = dot(lightSample, vec3(0.2126, 0.7152, 0.0722));
-                float anisotropy = clamp(dLen / (lum + 0.001), 0.0, 1.0);
+                float anisotropy = clamp(dLen * (1.0 / (lum + 0.001)), 0.0, 1.0); /* Opt: FMA + saturate */
                 phase = mix(1.0, hg, anisotropy * 0.7);
             }
 
