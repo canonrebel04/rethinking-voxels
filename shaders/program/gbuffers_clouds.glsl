@@ -102,7 +102,7 @@ void main() {
                     float cloudDistance = 2000.0;
                 #endif
 
-                cloudDistance = clamp((cloudDistance - xzMaxDistance) / cloudDistance, 0.0, 1.0);
+                cloudDistance = clamp((cloudDistance - xzMaxDistance) * (1.0 / cloudDistance), 0.0, 1.0); /* Opt: FMA + saturate */
                 color.a *= clamp01(cloudDistance * 3.0);
             #endif
         #endif

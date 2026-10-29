@@ -263,7 +263,7 @@
                     #else
                         float foamThreshold = pow2(texture2D(noisetex, waterPos * 4.0 + wind * 0.5).g) * 1.6;
                     #endif
-                    float foam = pow2(clamp((foamThreshold + yPosDif) / foamThreshold, 0.0, 1.0));
+                    float foam = pow2(clamp((foamThreshold + yPosDif) * (1.0 / foamThreshold), 0.0, 1.0)); /* Opt: FMA + saturate */
                     #ifndef END
                         foam *= 0.4 + 0.25 * lmCoord.y;
                     #else
